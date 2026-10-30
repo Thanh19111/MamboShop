@@ -1,13 +1,15 @@
 import axios, {type AxiosInstance} from "axios";
 
-const baseUrl = import.meta.env.BASE_URL;
+const apiUrl = 'https://api-ecom.duthanhduoc.com/';
+
+console.log(apiUrl);
 
 export class Http {
     public instance: AxiosInstance
 
     constructor() {
         this.instance = axios.create({
-            baseURL: baseUrl,
+            baseURL: apiUrl,
             timeout: 10000,
             headers: {
                 'Content-Type': 'application/json',

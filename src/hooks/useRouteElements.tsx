@@ -1,5 +1,6 @@
 import {useRoutes} from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
+import ProductList from "../pages/ProductList";
 
 const useRouteElements = () => {
     return useRoutes([
@@ -7,7 +8,7 @@ const useRouteElements = () => {
             index: true,
             element:
                 <MainLayout>
-                    <div>Test</div>
+                    <ProductList/>
                 </MainLayout>
         }
     ])

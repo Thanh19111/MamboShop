@@ -9,7 +9,7 @@ const App = () => {
         <div className='flex items-center justify-between h-full'>
             <nav className='flex gap-6 text-sm font-medium'>
                 <Link to='/' className='text-black!'>TRANG PHỤC</Link>
-                <Link to='/' className='text-black!'>PHỤ KIÊN</Link>
+                <Link to='/' className='text-black!'>PHỤ KIỆN</Link>
                 <Link to='/' className='text-black!'>ĐỒ DA</Link>
                 <Link to='/' className='text-black!'>THƯƠNG HIỆU</Link>
                 <Link to='/' className='text-black!'>ACTIVE</Link>
