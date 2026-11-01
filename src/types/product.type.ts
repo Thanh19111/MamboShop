@@ -1,4 +1,4 @@
-export interface ProductType {
+export interface Product {
     _id: string
     images: string[]
     price: number
@@ -19,7 +19,7 @@ export interface ProductType {
 }
 
 export interface ProductList {
-    products: ProductType[]
+    products: Product[]
     pagination: {
         page: number
         limit: number

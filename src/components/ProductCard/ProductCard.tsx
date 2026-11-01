@@ -1,64 +1,52 @@
-import {Badge, Card, Space, Typography} from 'antd';
+import {Card, Space, Typography} from 'antd';
+import {EditOutlined, EllipsisOutlined, SettingOutlined} from "@ant-design/icons";
 
 const {Meta} = Card;
-
 const {Text} = Typography;
 
-export interface Props {
+interface Props {
     name: string;
     price: number;
+    rating: number;
 }
 
 const App = ({
                  name,
-                 price
+                 price,
+                 rating
              }: Props) => {
     return (
-        <Space align="center">
-            <Badge.Ribbon text="New" color="red">
-                <Card
-                    hoverable
-                    variant="borderless"
-                    style={{width: 320}}
-                    cover={
-                        <img
-                            draggable={false}
-                            alt="example"
-                            src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-                        />
-                    }
-                >
-                    <Meta
-                        title={
-                            <Text className="font-bold text-black block text-center">
-                                Aristino
-                            </Text>
-                        }
-                        description={
-                            <Space
-                                vertical
-                                size={4}
-                                style={{width: '100%', textAlign: 'center'}}
-                            >
-                                <Text
-                                    className="text-gray-600 text-sm block"
-                                    ellipsis={{
-                                        tooltip: name,
-                                    }}
-                                >
-                                    {name}
-                                </Text>
+        <Card
+            hoverable
+            cover={
+                <img
+                    draggable={false}
+                    alt="example"
+                    src="https://cdn.hstatic.net/products/200000887901/m-aristino-regular-fit-ajk008bh0__13__d32dbfc587b64c64ad077b8a309a5bf4_3afc3f01c2034baf830a29704f9d1775_1024x1024.jpg"
+                />
+            }
+            actions={[
+                <SettingOutlined key="setting"/>,
+                <EditOutlined key="edit"/>,
+                <EllipsisOutlined key="ellipsis"/>,
+            ]}
+        >
+            <Meta
+                title={
+                    <Space vertical>
+                        <Text>Aristino</Text>
+                        <Text ellipsis={{ tooltip: name }}>{name}</Text>
+                    </Space>
 
-                                <Text className="text-black font-bold text-base block">
-                                    {price}
-                                </Text>
-                            </Space>
-                        }
-                    />
-                </Card>
-            </Badge.Ribbon>
-        </Space>
+                }
+                description={
+                    <Space vertical>
+                        <Text>{price}đ</Text>
+                    </Space>
+                }
+            />
+        </Card>
     );
-}
+};
 
 export default App;

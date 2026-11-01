@@ -1,12 +1,12 @@
-import {Col, Flex, Row, Typography} from "antd";
+import {Flex, Typography} from "antd";
 import {useQuery} from '@tanstack/react-query'
 import productApi from '../../apis/product.api.ts'
 import useQueryConfig from '../../hooks/useQueryConfig'
 
 import type {ProductListConfig} from '../../types/product.type.ts';
-import ProductCard from "../../components/ProductCard";
-import PhotoSlider from "../../components/PhotoSlider";
+import PhotoSlider from "../../components/ImageSlider";
 import Banner from "../../components/Banner";
+import ProductSlider from "../../components/ProductSlider";
 
 const {Title} = Typography;
 
@@ -40,7 +40,7 @@ const App = () => {
     return (
         <>
             <Banner images={bannerImages}/>
-            <div className="my-4">
+            <div className="my-4 px-6">
                 <div className="py-6">
                     <Flex justify="center" align='center' gap='small'>
                         <img style={{width: 32, height: 32}}
@@ -58,19 +58,7 @@ const App = () => {
                         <Title level={4} style={{margin: 0}}>BỘ SƯU TẬP MỚI</Title>
                     </Flex>
                 </div>
-                <Row gutter={[8, 8]} align="middle" justify="center">
-                    {productsData && productsData.data.data.products.map((product) => (
-                        <Col
-                            key={product._id}
-                            xs={24}
-                            lg={6}>
-                            <div className="flex justify-center">
-                                <ProductCard name={product.name} price={product.price}
-                                             rating={product.rating}/>
-                            </div>
-                        </Col>
-                    ))}
-                </Row>
+                {productsData && <ProductSlider products={productsData.data.data.products}/>}
             </div>
         </>
     )
