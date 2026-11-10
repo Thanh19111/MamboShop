@@ -1,4 +1,4 @@
-import {Button, Col, Divider, Flex, Input, Row, Space, Layout, Typography} from "antd";
+import {Button, Col, Divider, Flex, Input, Layout, Row, Space, Typography} from "antd";
 import {ArrowUpOutlined, FacebookFilled, InstagramOutlined, TikTokOutlined, YoutubeFilled} from "@ant-design/icons";
 import {Link} from "react-router-dom";
 
@@ -9,7 +9,7 @@ const {Title, Text} = Typography;
 const App = () => {
     return <Footer style={{backgroundColor: 'black'}}>
         <Row justify="space-around" align="middle">
-            <Col span={6}>
+            <Col xs={0} md={6}>
                 <Space size='large' className='justify-center w-full'>
                     <svg width="53" height="53" viewBox="0 0 53 53" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -22,7 +22,7 @@ const App = () => {
                     </Space>
                 </Space>
             </Col>
-            <Col span={6}>
+            <Col xs={0} md={6}>
                 <Space size='large' className='justify-center w-full'>
                     <svg width="53" height="53" viewBox="0 0 53 53" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_40000155_5130)">
@@ -48,7 +48,7 @@ const App = () => {
                     </Space>
                 </Space>
             </Col>
-            <Col span={6}>
+            <Col xs={0} md={6}>
                 <Space size='large' className='justify-center w-full'>
                     <svg width="52" height="53" viewBox="0 0 52 53" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -73,7 +73,7 @@ const App = () => {
                     </Space>
                 </Space>
             </Col>
-            <Col span={6}>
+            <Col xs={0} md={6}>
                 <Space size='large' className='justify-center w-full'>
                     <svg width="52" height="53" viewBox="0 0 52 53" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <mask id="mask0_40000155_5176" maskUnits="userSpaceOnUse" x="1" y="1" width="50"

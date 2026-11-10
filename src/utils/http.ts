@@ -62,8 +62,6 @@ export class Http {
                     const data = response.data as AuthResponse
                     this.accessToken = data.data.access_token
                     this.refreshToken = data.data.refresh_token
-                    console.log(url)
-                    console.log(data)
                     handleLogin(data)
                 } else if (url === URL_LOGOUT) {
                     this.accessToken = ''

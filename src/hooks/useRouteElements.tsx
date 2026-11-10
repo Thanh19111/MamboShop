@@ -5,10 +5,11 @@ import Register from "../pages/Register";
 import Login from "../pages/Login";
 import {useContext} from "react";
 import {AppContext} from "../contexts/app.context.tsx";
+import Account from "../pages/Account";
 
 function ProtectedRoute() {
     const {isAuthenticated} = useContext(AppContext)
-    return isAuthenticated ? <Outlet/> : <Navigate to='/login'/>
+    return isAuthenticated ? <Outlet/> : <Navigate to='/account/login'/>
 }
 
 function RejectedRoute() {
@@ -44,6 +45,24 @@ const useRouteElements = () => {
         },
         {
             path: '',
+            element: <ProtectedRoute/>,
+            children: [
+                {
+                    path: '',
+                    element: <MainLayout/>,
+                    children: [
+                        {
+                            path: "/account",
+                            element: (
+                                <Account/>
+                            )
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            path: '',
             element: <MainLayout/>,
             children: [
                 {
@@ -51,6 +70,12 @@ const useRouteElements = () => {
                     index: true,
                     element: (
                         <ProductList/>
+                    )
+                },
+                {
+                    path: "/account",
+                    element: (
+                        <Account/>
                     )
                 }
             ]
