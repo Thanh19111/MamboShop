@@ -27,12 +27,12 @@ const useRouteElements = () => {
                     path: '',
                     element: <MainLayout/>,
                     children: [
-                        {
-                            path: "/account/login",
-                            element: (
-                                <Login/>
-                            )
-                        },
+                        // {
+                        //     path: "/account/login",
+                        //     element: (
+                        //         <Login/>
+                        //     )
+                        // },
                         {
                             path: "/account/register",
                             element: (
@@ -77,7 +77,13 @@ const useRouteElements = () => {
                     element: (
                         <Account/>
                     )
-                }
+                },
+                {
+                    path: "/account/login",
+                    element: (
+                        <Login/>
+                    )
+                },
             ]
         }
     ])

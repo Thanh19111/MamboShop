@@ -1,15 +1,23 @@
-import {useForm} from 'react-hook-form';
 import {Button, DatePicker, Flex, Form, Input, type MenuProps, Typography} from 'antd';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import {CarOutlined, MailOutlined, ShoppingOutlined, UserOutlined} from "@ant-design/icons";
 import SubMenu from "../../components/SubMenu";
+import {useContext} from "react";
+import {AppContext} from "../../contexts/app.context.tsx";
+import {useMutation} from "@tanstack/react-query";
+import userApi from "../../apis/user.api.ts";
+import {setProfileToLS} from "../../utils/auth.ts";
 
 const {Title} = Typography;
+dayjs.extend(utc);
 
-interface ProfileFormData {
-    email: string;
-    name: string;
-    birthday: dayjs.Dayjs | null;
+interface formData {
+    name: string
+    phone: string
+    address: string
+    avatar: string
+    date_of_birth: Date
 }
 
 const accountMenuItems: MenuProps['items'] = [
@@ -36,50 +44,55 @@ const accountMenuItems: MenuProps['items'] = [
 ];
 
 export default function UserProfileForm() {
-    // 1. Khởi tạo react-hook-form
-    const {
-        handleSubmit,
-        setValue,
-        watch,
-        formState: {errors, isSubmitting},
-    } = useForm<ProfileFormData>({
-        defaultValues: {
-            email: 'phamthanh12b@gmail.com',
-            name: 'Phạm Thành',
-            birthday: null,
-        },
-    });
+    const {profile, reset, setProfile} = useContext(AppContext);
+    const [form] = Form.useForm();
 
-    // Theo dõi giá trị các trường để đồng bộ với Ant Design Form
-    const emailValue = watch('email');
-    const nameValue = watch('name');
-    const birthdayValue = watch('birthday');
+    const updateProfileMutation = useMutation({
+        mutationFn: userApi.updateProfile
+    })
 
-    // 2. Hàm xử lý khi submit thành công qua Ant Design Form
-    const onFinish = handleSubmit((data) => {
-        const formattedData = {
-            ...data,
-            birthday: data.birthday ? data.birthday.format('YYYY-MM-DD') : null,
-        };
-        console.log('Dữ liệu lưu thay đổi:', formattedData);
-    });
+    const onFinishFailed = (errorInfo) => {
+        console.log('Lỗi validate:', errorInfo);
+    };
 
+    const onFinish = (data: formData) => {
+        data.avatar = 'conchocaobangbopc';
+        updateProfileMutation.mutate(data, {
+            onSuccess: (res) => {
+                setProfile(res.data.data)
+                setProfileToLS(res.data.data)
+            },
+            onError: (error: any) => {
+                const formError = error.response?.data?.data;
+                if (formError) {
+                    // ✅ Sửa thành Object.keys(formError)
+                    Object.keys(formError).forEach((key) => {
+                        form.setFields([
+                            {
+                                name: key as keyof FormData,
+                                errors: [formError[key]] // Lấy thông báo lỗi tương ứng của field đó
+                            }
+                        ]);
+                    });
+                }
+            }
+        })
+    }
+
+    console.log(profile)
     return (
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
             <Flex justify="center" gap={48} className="flex-col md:flex-row">
                 <div className="w-full md:w-1/4">
                     <div className="p-4">
                         <Title level={2} className="text-xl font-bold mb-1 text-gray-900">
-                            Xin Chào, Thành Phạm!
+                            Xin Chào, {profile?.name}!
                         </Title>
-                        <a
-                            href="#logout"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                console.log('Đăng xuất');
-                            }}
-                            className="text-xs uppercase font-semibold text-black underline tracking-wider hover:text-gray-600"
-                        >
+                        <a onClick={(e) => {
+                               e.preventDefault();
+                               reset();
+                           }}
+                           className="text-xs uppercase font-semibold text-black underline tracking-wider hover:text-gray-600">
                             ĐĂNG XUẤT
                         </a>
                     </div>
@@ -93,24 +106,30 @@ export default function UserProfileForm() {
                         </Title>
 
                         <Form
+                            form={form}
                             name="profile_form"
                             layout="vertical"
                             onFinish={onFinish}
-                            requiredMark={false}
+                            onFinishFailed={onFinishFailed}
                             autoComplete="off"
+
+                            initialValues={{
+                                // Chuyển string thành dayjs object ngay tại initialValues
+                                date_of_birth: dayjs.utc(profile?.date_of_birth || null),
+                                name: profile?.name || null,
+                                phone: profile?.phone || null,
+                                address: profile?.address || null
+                            }}
                         >
                             {/* Trường Email */}
                             <Form.Item
                                 label={<span className="text-sm font-medium text-gray-800">Email</span>}
-                                validateStatus={errors.email ? 'error' : ''}
-                                help={errors.email?.message}
                                 className="mb-6"
                             >
                                 <Input
+                                    value={profile?.email || ''}
                                     size="large"
                                     placeholder="Nhập email"
-                                    value={emailValue}
-                                    onChange={(e) => setValue('email', e.target.value, {shouldValidate: true})}
                                     className="rounded-md border-gray-300 hover:border-black focus:border-black"
                                 />
                             </Form.Item>
@@ -118,22 +137,21 @@ export default function UserProfileForm() {
                             {/* Trường Họ & Tên */}
                             <Form.Item
                                 label={<span className="text-sm font-medium text-gray-800">Họ & Tên</span>}
-                                validateStatus={errors.name ? 'error' : ''}
-                                help={errors.name?.message}
                                 className="mb-6"
+                                name="name"
                             >
                                 <Input
                                     size="large"
                                     placeholder="Nhập họ và tên"
-                                    value={nameValue}
-                                    onChange={(e) => setValue('name', e.target.value, {shouldValidate: true})}
                                     className="rounded-md border-gray-300 hover:border-black focus:border-black"
                                 />
                             </Form.Item>
 
                             <Form.Item
                                 label={<span className="text-sm font-medium text-gray-800">Số điện thoại</span>}
-                                className="mb-6">
+                                className="mb-6"
+                                name="phone"
+                            >
                                 <Input
                                     size="large"
                                     placeholder="Nhập số điện thoại"
@@ -143,7 +161,9 @@ export default function UserProfileForm() {
 
                             <Form.Item
                                 label={<span className="text-sm font-medium text-gray-800">Địa chỉ</span>}
-                                className="mb-6">
+                                className="mb-6"
+                                name="address"
+                            >
                                 <Input
                                     size="large"
                                     placeholder="Nhập vào địa chỉ"
@@ -154,16 +174,13 @@ export default function UserProfileForm() {
                             {/* Trường Sinh nhật */}
                             <Form.Item
                                 label={<span className="text-sm font-medium text-gray-800">Sinh nhật</span>}
-                                validateStatus={errors.birthday ? 'error' : ''}
-                                help={errors.birthday?.message}
                                 className="mb-8"
+                                name="date_of_birth"
                             >
                                 <DatePicker
                                     size="large"
                                     placeholder="Nhập ngày tháng năm"
                                     format="DD/MM/YYYY"
-                                    value={birthdayValue}
-                                    onChange={(date) => setValue('birthday', date, {shouldValidate: true})}
                                     className="w-full rounded-md border-gray-300 hover:border-black focus:border-black"
                                 />
                             </Form.Item>
@@ -173,9 +190,9 @@ export default function UserProfileForm() {
                                 <Button
                                     type="primary"
                                     htmlType="submit"
-                                    size="large"
-                                    loading={isSubmitting}
-                                    className="bg-black hover:bg-gray-800 text-white font-medium uppercase tracking-wider px-8 h-12 rounded-none border-none shadow-none"
+                                    size="medium"
+                                    loading={updateProfileMutation.isPending}
+                                    className="bg-black hover:bg-gray-800 text-white tracking-wider px-8 h-12 rounded-none border-none shadow-none"
                                 >
                                     Lưu Thay Đổi
                                 </Button>
