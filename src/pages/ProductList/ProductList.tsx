@@ -7,6 +7,7 @@ import type {ProductListConfig} from '../../types/product.type.ts';
 import PhotoSlider from "../../components/ImageSlider";
 import Banner from "../../components/Banner";
 import ProductSlider from "../../components/ProductSlider";
+import Pagination from "../../components/Pagination";
 
 const {Title} = Typography;
 
@@ -37,6 +38,9 @@ const App = () => {
         staleTime: 3 * 60 * 1000
     })
 
+    const products = productsData?.data.data.products
+    const pagination = productsData?.data.data.pagination
+
     return (
         <>
             <Banner images={bannerImages}/>
@@ -58,7 +62,10 @@ const App = () => {
                         <Title level={4} style={{margin: 0}}>BỘ SƯU TẬP MỚI</Title>
                     </Flex>
                 </div>
-                {productsData && <ProductSlider products={productsData.data.data.products}/>}
+                {products && <ProductSlider products={products}/>}
+                <div className="py-4">
+                    {pagination && <Pagination queryConfig={queryConfig} defaultCurrent={pagination.page} pageSize={pagination.limit} total={pagination.page_size * pagination.limit }/>}
+                </div>
             </div>
         </>
     )

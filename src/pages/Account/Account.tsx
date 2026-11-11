@@ -5,9 +5,11 @@ import {CarOutlined, MailOutlined, ShoppingOutlined, UserOutlined} from "@ant-de
 import SubMenu from "../../components/SubMenu";
 import {useContext} from "react";
 import {AppContext} from "../../contexts/app.context.tsx";
-import {useMutation} from "@tanstack/react-query";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import userApi from "../../apis/user.api.ts";
 import {setProfileToLS} from "../../utils/auth.ts";
+import authApi from "../../apis/auth.api.ts";
+import {purchasesStatus} from "../../constants/purchase.ts";
 
 const {Title} = Typography;
 dayjs.extend(utc);
@@ -19,6 +21,7 @@ interface formData {
     avatar: string
     date_of_birth: Date
 }
+
 
 const accountMenuItems: MenuProps['items'] = [
     {
@@ -44,8 +47,10 @@ const accountMenuItems: MenuProps['items'] = [
 ];
 
 export default function UserProfileForm() {
-    const {profile, reset, setProfile} = useContext(AppContext);
+    const {profile, reset, setProfile, setIsAuthenticated} = useContext(AppContext);
     const [form] = Form.useForm();
+
+    const queryClient = useQueryClient()
 
     const updateProfileMutation = useMutation({
         mutationFn: userApi.updateProfile
@@ -54,6 +59,20 @@ export default function UserProfileForm() {
     const onFinishFailed = (errorInfo) => {
         console.log('Lỗi validate:', errorInfo);
     };
+
+    const logoutMutation = useMutation({
+        mutationFn: authApi.logout,
+        onSuccess: () => {
+            console.log(111)
+            setIsAuthenticated(false)
+            setProfile(null)
+            queryClient.removeQueries({ queryKey: ['purchases', { status: purchasesStatus.inCart }] })
+        }
+    })
+
+    const handleLogout = () => {
+        logoutMutation.mutate()
+    }
 
     const onFinish = (data: formData) => {
         data.avatar = 'conchocaobangbopc';
@@ -86,15 +105,10 @@ export default function UserProfileForm() {
                 <div className="w-full md:w-1/4">
                     <div className="p-4">
                         <Title level={2} className="text-xl font-bold mb-1 text-gray-900">
-                            Xin Chào, {profile?.name}!
+                            Xin chào, {profile?.name}!
                         </Title>
-                        <a onClick={(e) => {
-                               e.preventDefault();
-                               reset();
-                           }}
-                           className="text-xs uppercase font-semibold text-black underline tracking-wider hover:text-gray-600">
-                            ĐĂNG XUẤT
-                        </a>
+                        <button onClick={handleLogout} className="text-xs uppercase font-semibold text-black underline tracking-wider hover:text-gray-600 cursor-pointer">ĐĂNG XUẤT
+                        </button>
                     </div>
                     <SubMenu items={accountMenuItems} selectedKeys={'profile'} mode={'vertical'}/>
                 </div>

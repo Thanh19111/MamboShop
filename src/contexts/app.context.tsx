@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react'
+import {createContext, useState} from 'react'
 import type {ExtendedPurchase} from "../types/purchase.type.ts";
 import type {User} from "../types/user.type.ts";
 import {getAccessTokenFromLS, getProfileFromLS} from "../utils/auth.ts";
