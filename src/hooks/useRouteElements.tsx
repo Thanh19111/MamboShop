@@ -6,6 +6,7 @@ import Login from "../pages/Login";
 import {useContext} from "react";
 import {AppContext} from "../contexts/app.context.tsx";
 import Account from "../pages/Account";
+import Product from "../pages/Product";
 
 function ProtectedRoute() {
     const {isAuthenticated} = useContext(AppContext)
@@ -70,6 +71,12 @@ const useRouteElements = () => {
                     index: true,
                     element: (
                         <ProductList/>
+                    )
+                },
+                {
+                    path: "/products",
+                    element: (
+                        <Product/>
                     )
                 },
                 {

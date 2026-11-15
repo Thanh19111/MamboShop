@@ -54,18 +54,6 @@ const App = () => {
                     </Flex>
                 </div>
                 <PhotoSlider images={slider1}/>
-                <div className="py-6">
-                    <Flex justify="center" align='center' gap='small'>
-                        <img style={{width: 32, height: 32}}
-                             src="https://file.hstatic.net/200000887901/file/isolation_mode_ab277d5f3bda477c8ea36037876365f6.svg"
-                             alt="BỘ SƯU TẬP MỚI"/>
-                        <Title level={4} style={{margin: 0}}>BỘ SƯU TẬP MỚI</Title>
-                    </Flex>
-                </div>
-                {products && <ProductSlider products={products}/>}
-                <div className="py-4">
-                    {pagination && <Pagination queryConfig={queryConfig} defaultCurrent={pagination.page} pageSize={pagination.limit} total={pagination.page_size * pagination.limit }/>}
-                </div>
             </div>
         </>
     )

@@ -1,50 +1,75 @@
-import {Card, Space, Typography} from 'antd';
-import {EditOutlined, EllipsisOutlined, SettingOutlined} from "@ant-design/icons";
-
-const {Meta} = Card;
-const {Text} = Typography;
+import {Card, Typography} from 'antd';
+import {PlusOutlined} from "@ant-design/icons";
 
 interface Props {
+    image: string;
+    brand: string;
     name: string;
     price: number;
-    rating: number;
+    isNew?: boolean;
 }
 
 const App = ({
                  name,
+                 image,
+                 brand,
                  price,
-                 rating
+                 isNew
              }: Props) => {
+    const formatCurrency = (amount: number) => {
+        return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
+    };
+
     return (
         <Card
             hoverable
+            className="w-full max-w-[280px] rounded-none border border-gray-200 shadow-none transition-all duration-300 bg-white"
             cover={
-                <img
-                    draggable={false}
-                    alt="example"
-                    src="https://cdn.hstatic.net/products/200000887901/m-aristino-regular-fit-ajk008bh0__13__d32dbfc587b64c64ad077b8a309a5bf4_3afc3f01c2034baf830a29704f9d1775_1024x1024.jpg"
-                />
-            }
-            actions={[
-                <SettingOutlined key="setting"/>,
-                <EditOutlined key="edit"/>,
-                <EllipsisOutlined key="ellipsis"/>,
-            ]}
-        >
-            <Meta
-                title={
-                    <Space vertical>
-                        <Text>Aristino</Text>
-                        <Text ellipsis={{ tooltip: name }}>{name}</Text>
-                    </Space>
+                <div className="relative group overflow-hidden bg-[#f3f3f3] aspect-[3/4]">
+                    {/* Nhãn NEW góc trên bên trái */}
+                    {isNew && (
+                        <div className="absolute top-3 left-3 bg-black text-white text-[11px] font-bold px-2.5 py-1 tracking-wider uppercase rounded-[2px]">
+                            NEW
+                        </div>
+                    )}
 
-                }
-                description={
-                    <Space vertical>
-                        <Text>{price}đ</Text>
-                    </Space>
-                }
-            />
+                    {/* Ảnh sản phẩm tràn viền */}
+                    <img
+                        alt={name}
+                        src={image}
+                        className="w-full h-full object-cover object-center"
+                    />
+
+                    {/* Nút dấu cộng (+) góc dưới bên phải ảnh */}
+                    <button
+                        className="absolute bottom-3 right-3 w-8 h-8 bg-white border border-gray-300 rounded-[4px] flex items-center justify-center text-black shadow-sm hover:bg-gray-100 transition-all duration-200 cursor-pointer"
+                        onClick={(e) => {
+                            e.stopPropagation(); // Ngăn sự kiện nổi bọt khi click vào card
+                            console.log('Clicked quick add/action');
+                        }}
+                    >
+                        <PlusOutlined className="text-xs font-semibold" />
+                    </button>
+                </div>
+            }
+        >
+            {/* Phần thông tin căn giữa */}
+            <div className="text-center">
+                {/* Tên thương hiệu: Đậm, màu đen rõ nét */}
+                <h4 className="text-sm font-bold text-gray-900">
+                    {brand}
+                </h4>
+
+                {/* Tên sản phẩm: Chữ thường, thanh thoát, giới hạn 1 dòng */}
+                <h3 className="text-sm font-normal text-gray-800 line-clamp-1">
+                    {name}
+                </h3>
+
+                {/* Giá tiền: Đậm, nổi bật */}
+                <div className="text-base font-bold text-gray-900">
+                    {formatCurrency(price)}
+                </div>
+            </div>
         </Card>
     );
 };
