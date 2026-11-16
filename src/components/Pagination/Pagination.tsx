@@ -4,11 +4,11 @@ import type {QueryConfig} from "../../hooks/useQueryConfig.tsx";
 
 interface Props {
     queryConfig: QueryConfig
-    defaultCurrent: number
+    current: number
     pageSize: number
     total: number
 }
-const App = ({queryConfig, defaultCurrent, pageSize, total} : Props) => {
+const App = ({queryConfig, current, pageSize, total} : Props) => {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -24,7 +24,7 @@ const App = ({queryConfig, defaultCurrent, pageSize, total} : Props) => {
         });
     };
     return (
-        <Pagination onChange={handlePageChange} align="center" defaultCurrent={defaultCurrent} total={total} pageSize={pageSize} />
+        <Pagination onChange={handlePageChange} align="center" defaultCurrent={current} total={total} pageSize={pageSize} />
     )
 }
 
