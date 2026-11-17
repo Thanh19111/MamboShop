@@ -7,6 +7,7 @@ import type {ProductListConfig} from "../../types/product.type.ts";
 import Pagination from "../../components/Pagination";
 import AsideFilter from "../../components/AsideFilter";
 import categoryApi from "../../apis/category.api.ts";
+import Sort from "../../components/Sort/Sort.tsx";
 
 const {Sider, Content} = Layout;
 const {Title} = Typography;
@@ -34,10 +35,6 @@ const App = () => {
     const products = productsData?.data.data.products || []
     const pagination = productsData?.data.data.pagination
 
-    const handleSortChange = (value: string) => {
-        console.log('Sắp xếp theo:', value);
-        // Gọi setSearchParams({ ...queryConfig, sort_by: value }) ở đây
-    };
 
     return (
         <div className="mx-auto p-4 bg-white">
@@ -56,18 +53,7 @@ const App = () => {
                         </Title>
 
                         <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-500">Sắp xếp theo:</span>
-                            <Select
-                                defaultValue="newest"
-                                style={{width: 180}}
-                                onChange={handleSortChange}
-                                options={[
-                                    {value: 'newest', label: 'Mới nhất'},
-                                    {value: 'price_asc', label: 'Giá: Thấp đến Cao'},
-                                    {value: 'price_desc', label: 'Giá: Cao đến Thấp'},
-                                    {value: 'sold', label: 'Bán chạy nhất'},
-                                ]}
-                            />
+                            <Sort queryConfig={queryConfig}/>
                         </div>
                     </div>
 
