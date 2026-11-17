@@ -49,6 +49,7 @@ const App = ({queryConfig}: Props) => {
             <span className="text-sm text-gray-500">Sắp xếp theo:</span>
             <Select
                 style={{width: 180}}
+                defaultValue={sortBy.view}
                 onChange={handleSortChange}
                 options={[
                     {value: sortBy.createdAt, label: 'Mới nhất'},

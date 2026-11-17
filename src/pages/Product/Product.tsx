@@ -1,4 +1,4 @@
-import {Col, Layout, Row, Select, Typography} from 'antd';
+import {Col, Layout, Row, Typography} from 'antd';
 import ProductCard from "../../components/ProductCard";
 import useQueryConfig from "../../hooks/useQueryConfig.tsx";
 import {useQuery} from "@tanstack/react-query";
@@ -62,13 +62,11 @@ const App = () => {
                         <Row gutter={[16, 24]}>
                             {products && products.map((product) => (
                                 <Col key={product._id} xs={12} sm={12} md={8} xl={6}>
-                                    <ProductCard image={product.image} name={product.name} brand={product.brand}
-                                                 price={product.price} isNew={false}/>
+                                    <ProductCard product={product}/>
                                 </Col>
                             ))}
                         </Row>
                     </div>
-
 
                     {/* Thanh phân trang dưới cùng */}
                     {

@@ -2,7 +2,7 @@ import {Button, DatePicker, Flex, Form, Input, type MenuProps, Typography} from 
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import {CarOutlined, MailOutlined, ShoppingOutlined, UserOutlined} from "@ant-design/icons";
-import SubMenu from "../../components/SubMenu";
+import SubMenu from "./components/SubMenu";
 import {useContext} from "react";
 import {AppContext} from "../../contexts/app.context.tsx";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
@@ -21,7 +21,6 @@ interface formData {
     avatar: string
     date_of_birth: Date
 }
-
 
 const accountMenuItems: MenuProps['items'] = [
     {
@@ -66,7 +65,7 @@ export default function UserProfileForm() {
             console.log(111)
             setIsAuthenticated(false)
             setProfile(null)
-            queryClient.removeQueries({ queryKey: ['purchases', { status: purchasesStatus.inCart }] })
+            queryClient.removeQueries({queryKey: ['purchases', {status: purchasesStatus.inCart}]})
         }
     })
 
@@ -107,7 +106,9 @@ export default function UserProfileForm() {
                         <Title level={2} className="text-xl font-bold mb-1 text-gray-900">
                             Xin chào, {profile?.name}!
                         </Title>
-                        <button onClick={handleLogout} className="text-xs uppercase font-semibold text-black underline tracking-wider hover:text-gray-600 cursor-pointer">ĐĂNG XUẤT
+                        <button onClick={handleLogout}
+                                className="text-xs uppercase font-semibold text-black underline tracking-wider hover:text-gray-600 cursor-pointer">ĐĂNG
+                            XUẤT
                         </button>
                     </div>
                     <SubMenu items={accountMenuItems} selectedKeys={'profile'} mode={'vertical'}/>

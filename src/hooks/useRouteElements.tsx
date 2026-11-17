@@ -7,6 +7,8 @@ import {useContext} from "react";
 import {AppContext} from "../contexts/app.context.tsx";
 import Account from "../pages/Account";
 import Product from "../pages/Product";
+import Cart from "../pages/Cart";
+import ProductDetail from "../pages/ProductDetail";
 
 function ProtectedRoute() {
     const {isAuthenticated} = useContext(AppContext)
@@ -83,6 +85,18 @@ const useRouteElements = () => {
                     path: "/account",
                     element: (
                         <Account/>
+                    )
+                },
+                {
+                    path: "/cart",
+                    element: (
+                        <Cart/>
+                    )
+                },
+                {
+                    path: "/products/:name",
+                    element: (
+                        <ProductDetail/>
                     )
                 },
                 {
