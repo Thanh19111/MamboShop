@@ -1,4 +1,4 @@
-import {useNavigate} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import {useForm} from 'react-hook-form' // Vẫn giữ react-hook-form để validate schema
 import {yupResolver} from '@hookform/resolvers/yup'
 import {useMutation} from '@tanstack/react-query'
@@ -16,12 +16,12 @@ const registerSchema = schema.pick(['email', 'password', 'confirm_password'])
 const menuItems: MenuProps['items'] = [
     {
         key: 'login',
-        label: <span className="text-base font-medium px-4">Đăng Nhập</span>,
+        label: <Link to={"/account/login"}><span className="text-base font-medium px-4">Đăng Nhập</span></Link>,
     },
     {
         key: 'register',
-        label: <span className="text-base font-medium px-4">Đăng Ký</span>,
-    },
+        label: <Link to={"/account/register"}><span className="text-base font-medium px-4">Đăng Ký</span></Link>,
+    }
 ];
 
 export default function Register() {

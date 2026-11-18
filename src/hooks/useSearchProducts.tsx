@@ -1,43 +1,28 @@
-import { yupResolver } from '@hookform/resolvers/yup'
-import omit from 'lodash/omit'
-import { useForm } from 'react-hook-form'
-import useQueryConfig from './useQueryConfig'
-import { createSearchParams, useNavigate } from 'react-router-dom'
-import {schema, type Schema} from "../utils/rules.ts";
+import useQueryConfig from "./useQueryConfig.tsx";
+import {createSearchParams, useNavigate} from "react-router-dom";
+import omit from "lodash/omit";
 import path from "../constants/paths.ts";
+import {useState} from "react";
 
-type FormData = Pick<Schema, 'name'>
+const App = () => {
+    const [searchValue, setSearchValue] = useState('');
+    const queryConfig = useQueryConfig()
+    const navigate = useNavigate()
 
-const nameSchema = schema.pick(['name'])
+    const handleSearch = (name: string) => {
+        const trimmed = name.trim();
+        if (!trimmed) return;
 
-export default function useSearchProducts() {
-  const queryConfig = useQueryConfig()
+        const config = queryConfig.order
+            ? omit({...queryConfig, name: trimmed}, ['order', 'sort_by'])
+            : {...queryConfig, name: trimmed}
+        navigate({
+            pathname: path.products,
+            search: createSearchParams(config).toString()
+        })
+    }
 
-  const { register, handleSubmit } = useForm<FormData>({
-    defaultValues: {
-      name: ''
-    },
-    resolver: yupResolver(nameSchema)
-  })
-  const navigate = useNavigate()
-
-  const onSubmitSearch = handleSubmit((data) => {
-    const config = queryConfig.order
-      ? omit(
-          {
-            ...queryConfig,
-            name: data.name
-          },
-          ['order', 'sort_by']
-        )
-      : {
-          ...queryConfig,
-          name: data.name
-        }
-    navigate({
-      pathname: path.home,
-      search: createSearchParams(config).toString()
-    })
-  })
-  return { onSubmitSearch, register }
+    return {searchValue, setSearchValue, handleSearch}
 }
+
+export default App;

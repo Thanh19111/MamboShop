@@ -1,13 +1,6 @@
 import {Flex, Typography} from "antd";
-import {useQuery} from '@tanstack/react-query'
-import productApi from '../../apis/product.api.ts'
-import useQueryConfig from '../../hooks/useQueryConfig'
-
-import type {ProductListConfig} from '../../types/product.type.ts';
 import PhotoSlider from "../../components/ImageSlider";
 import Banner from "../../components/Banner";
-import ProductSlider from "../../components/ProductSlider";
-import Pagination from "../../components/Pagination";
 
 const {Title} = Typography;
 
@@ -28,19 +21,6 @@ const bannerImages = [
 ];
 
 const App = () => {
-    const queryConfig = useQueryConfig()
-
-    const {data: productsData} = useQuery({
-        queryKey: ['products', queryConfig],
-        queryFn: () => {
-            return productApi.getProducts(queryConfig as ProductListConfig)
-        },
-        staleTime: 3 * 60 * 1000
-    })
-
-    const products = productsData?.data.data.products
-    const pagination = productsData?.data.data.pagination
-
     return (
         <>
             <Banner images={bannerImages}/>

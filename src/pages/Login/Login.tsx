@@ -1,4 +1,4 @@
-import {useNavigate} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 
 import {useContext} from 'react'
 import {Button, Flex, Form, Input, Menu, type MenuProps} from "antd";
@@ -12,12 +12,12 @@ type FormData = Pick<Schema, 'email' | 'password'>
 const menuItems: MenuProps['items'] = [
     {
         key: 'login',
-        label: <span className="text-base font-medium px-4">Đăng Nhập</span>,
+        label: <Link to={"/account/login"}><span className="text-base font-medium px-4">Đăng Nhập</span></Link>,
     },
     {
         key: 'register',
-        label: <span className="text-base font-medium px-4">Đăng Ký</span>,
-    },
+        label: <Link to={"/account/register"}><span className="text-base font-medium px-4">Đăng Ký</span></Link>,
+    }
 ];
 
 export default function Login() {

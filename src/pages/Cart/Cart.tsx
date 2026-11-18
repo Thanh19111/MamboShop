@@ -6,11 +6,13 @@ import {useMutation, useQuery} from "@tanstack/react-query";
 import {purchasesStatus} from "../../constants/purchase.ts";
 import purchaseApi from "../../apis/purchase.api.ts";
 import type {Purchase} from "../../types/purchase.type.ts";
+import {toast} from "react-toastify";
 
 const {Title} = Typography;
 
 export default function CartPage() {
     const navigate = useNavigate();
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
     // 1. Gọi API lấy giỏ hàng từ server
     const {data: purchasesInCartData, refetch} = useQuery({
@@ -33,10 +35,18 @@ export default function CartPage() {
         }
     })
 
-    const purchases: Purchase[] = purchasesInCartData?.data.data || [];
+    const purchaseOrder = useMutation({
+        mutationFn: purchaseApi.buyProducts,
+        onSuccess: (data) => {
+            refetch()
+            toast.success(data.data.message, {
+                position: 'top-center',
+                autoClose: 1000
+            })
+        }
+    })
 
-    // State quản lý các sản phẩm được chọn để thanh toán (lưu id)
-    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+    const purchases: Purchase[] = purchasesInCartData?.data.data || [];
 
     // Xử lý thay đổi số lượng sản phẩm (Gọi API update ở đây sau)
     const handleQuantityChange = (id: string, quantity: number | null) => {
@@ -50,6 +60,16 @@ export default function CartPage() {
         setSelectedRowKeys(prev => prev.filter(key => key !== id))
         deletePurchases.mutate([id])
     };
+
+    const handlePurchaseOrder = () => {
+        if (selectedItems.length > 0) {
+            const body = selectedItems.map((purchase) => ({
+                product_id: purchase.product._id,
+                buy_count: purchase.buy_count
+            }))
+            purchaseOrder.mutate(body)
+        }
+    }
 
     // 2. Cấu hình các cột khớp với cấu trúc object Purchase của API
     const columns = [
@@ -128,6 +148,10 @@ export default function CartPage() {
         },
     ];
 
+    // 3. Tính tổng tiền dựa hoàn toàn trên dữ liệu API thực tế (`purchases`)
+    const selectedItems = purchases.filter(item => selectedRowKeys.includes(item._id));
+    const totalPrice = selectedItems.reduce((sum, item) => sum + item.price * item.buy_count, 0);
+
     // Cấu hình chọn hàng (Checkbox)
     const rowSelection = {
         selectedRowKeys,
@@ -135,10 +159,6 @@ export default function CartPage() {
             setSelectedRowKeys(newSelectedRowKeys);
         },
     };
-
-    // 3. Tính tổng tiền dựa hoàn toàn trên dữ liệu API thực tế (`purchases`)
-    const selectedItems = purchases.filter(item => selectedRowKeys.includes(item._id));
-    const totalPrice = selectedItems.reduce((sum, item) => sum + item.price * item.buy_count, 0);
 
     return (
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -214,7 +234,8 @@ export default function CartPage() {
                             type="primary"
                             disabled={selectedRowKeys.length === 0}
                             className="w-full rounded-none bg-black hover:bg-gray-800 text-white h-12 uppercase tracking-wider font-medium text-xs mt-4 disabled:bg-gray-300 disabled:text-gray-500"
-                            onClick={() => console.log('Tiến hành thanh toán với các items:', selectedRowKeys)}
+                            onClick={handlePurchaseOrder}
+                            loading={purchaseOrder.isPending}
                         >
                             Tiến hành thanh toán
                         </Button>

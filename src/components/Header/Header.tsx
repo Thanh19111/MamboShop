@@ -1,16 +1,20 @@
 import {createSearchParams, Link} from "react-router-dom";
 import {Layout} from 'antd';
-import {HeartOutlined, SearchOutlined, ShoppingOutlined, UserOutlined} from "@ant-design/icons";
+import {HeartOutlined, ShoppingOutlined, UserOutlined} from "@ant-design/icons";
 import HorizontalMenu from "../HorizontalMenu";
 import categoryApi from "../../apis/category.api.ts";
 import {useQuery} from "@tanstack/react-query";
 import path from "../../constants/paths.ts";
 import useQueryConfig from "../../hooks/useQueryConfig.tsx";
+import SearchBar from "../SearchBar/SearchBar.tsx";
+import omit from "lodash/omit";
+import useSearchProducts from "../../hooks/useSearchProducts.tsx";
 
 const {Header} = Layout;
 
 const App = () => {
-    const queryConfig = useQueryConfig()
+    const queryConfig = useQueryConfig();
+    const {handleSearch} = useSearchProducts();
 
     const {data} = useQuery({
         queryKey: ['categories'],
@@ -22,14 +26,10 @@ const App = () => {
     const categories = data?.data.data.map((item) => ({
         key: item._id,     // Dùng _id làm key định danh
         label: <Link to={{
-            pathname: path.home,
-            search: createSearchParams({
-                ...queryConfig,
-                category: item._id
-            }).toString()
+            pathname: path.products,
+            search: createSearchParams(omit({...queryConfig, category: item._id}, ['page', 'name'])).toString()
         }}>{item.name}</Link>,  // Dùng name làm tên hiển thị
     }));
-
 
     const items = [
         {
@@ -62,14 +62,13 @@ const App = () => {
             <Header style={{backgroundColor: "white", paddingBottom: "8px", paddingTop: "8px"}}>
                 <div className='flex items-center justify-between h-full'>
                     <nav className='flex gap-5 text-sm font-medium'>
-                        <Link to='/' className='text-black!'>TRANG PHỤC</Link>
+                        <Link to='/' className='text-black!'>TRANG CHỦ</Link>
                         <Link to='/' className='text-black!'>PHỤ KIỆN</Link>
                         <Link to='/' className='text-black!'>ĐỒ DA</Link>
                         <Link to='/' className='text-black!'>THƯƠNG HIỆU</Link>
                         <Link to='/' className='text-black!'>ACTIVE</Link>
                     </nav>
-                    <Link to="/"
-                          className="absolute left-1/2 -translate-x-1/2 text-xl font-bold tracking-widest text-black hover:text-gray-800s">
+                    <Link to="/" className="absolute left-1/2 -translate-x-1/2 text-xl font-bold tracking-widest text-black hover:text-gray-800s">
                         <svg width="94" height="23" viewBox="0 0 94 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M7.73931 18.9287H4.13467L3.56113 22.3807H0.357666L4.36349 0.619159H7.51049L11.5163 22.3807H8.31285L7.73931 18.9287ZM7.19549 15.509L5.9355 7.70725L4.67551 15.509H7.19549Z"
@@ -81,8 +80,9 @@ const App = () => {
                             <path
                                 d="M40.9095 22.631C39.5366 22.631 38.4312 22.208 37.5902 21.3555C36.6363 20.3609 36.1608 19.0046 36.1608 17.2835V14.4547H39.3078V17.2835C39.3078 18.0294 39.4504 18.5493 39.7357 18.8367C39.9824 19.0853 40.3746 19.2113 40.9095 19.2113C41.4444 19.2113 41.8545 19.0853 42.0833 18.8367C42.3686 18.5687 42.5113 18.0488 42.5113 17.2835V15.9143C42.5113 14.9617 42.1576 14.1318 41.4534 13.4278C41.3018 13.2825 40.9006 13.0144 40.2528 12.6205C39.3554 12.1038 38.6986 11.6453 38.2796 11.2513C37.5931 10.5893 37.0672 9.83046 36.7076 8.98118C36.345 8.1319 36.1638 7.22126 36.1638 6.24604V5.71645C36.1638 3.99529 36.6392 2.63902 37.5931 1.64443C38.4312 0.795151 39.5396 0.368896 40.9125 0.368896C42.2854 0.368896 43.3909 0.795151 44.2319 1.64443C45.1858 2.63902 45.6612 3.99529 45.6612 5.71645V7.61199H42.5142V5.71645C42.5142 4.95113 42.3716 4.43123 42.0863 4.16321C41.8575 3.91456 41.4652 3.78862 40.9125 3.78862C40.3598 3.78862 39.9883 3.91456 39.7387 4.16321C39.4534 4.45384 39.3108 4.97051 39.3108 5.71645V6.24604C39.3108 7.19866 39.6644 8.01887 40.3687 8.70024C40.5589 8.86492 40.9303 9.11357 41.4831 9.44618C42.4756 10.0274 43.1621 10.5021 43.5424 10.8767C44.954 12.2459 45.6583 13.9219 45.6583 15.911V17.2802C45.6583 19.0014 45.1798 20.3577 44.2289 21.3522C43.3909 22.2015 42.2824 22.6278 40.9095 22.6278"
                                 fill="black"></path>
-                            <path d="M59.2152 4.03888H56.0117V22.3807H52.8647V4.03888H49.6612V0.619159H59.2152V4.03888Z"
-                                  fill="black"></path>
+                            <path
+                                d="M59.2152 4.03888H56.0117V22.3807H52.8647V4.03888H49.6612V0.619159H59.2152V4.03888Z"
+                                fill="black"></path>
                             <path d="M66.3622 0.619159H63.2152V22.3807H66.3622V0.619159Z" fill="black"></path>
                             <path
                                 d="M80.145 22.3807H78.3144L73.5092 11.3433V22.3807H70.3622V0.619159H72.1927L76.998 11.6243V0.619159H80.145V22.3807Z"
@@ -93,12 +93,18 @@ const App = () => {
                         </svg>
                     </Link>
                     <ul className="flex items-center gap-7 text-lg text-gray-700">
-                        <li className="cursor-pointer hover:text-black transition-colors"><SearchOutlined/></li>
+                        <li className="w-[320px]">
+                            <SearchBar handleSearch={handleSearch}/>
+                        </li>
                         <li className="cursor-pointer hover:text-black transition-colors">
                             <Link to="/account"> <UserOutlined/></Link>
                         </li>
-                        <li className="cursor-pointer hover:text-black transition-colors"><HeartOutlined/></li>
-                        <li className="cursor-pointer hover:text-black transition-colors"><ShoppingOutlined/></li>
+                        <li className="cursor-pointer hover:text-black transition-colors">
+                            <Link to={"/products"}><HeartOutlined/></Link>
+                        </li>
+                        <li className="cursor-pointer hover:text-black transition-colors">
+                            <Link to="/cart"> <ShoppingOutlined/></Link>
+                        </li>
                     </ul>
                 </div>
             </Header>
