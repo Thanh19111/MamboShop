@@ -2,83 +2,78 @@ import React, {useState} from 'react';
 import {Button, Divider, Image, InputNumber, Table, Typography} from 'antd';
 import {ArrowLeftOutlined, DeleteOutlined, ShoppingOutlined} from '@ant-design/icons';
 import {useNavigate} from 'react-router-dom';
+import {useMutation, useQuery} from "@tanstack/react-query";
+import {purchasesStatus} from "../../constants/purchase.ts";
+import purchaseApi from "../../apis/purchase.api.ts";
+import type {Purchase} from "../../types/purchase.type.ts";
 
 const {Title} = Typography;
-
-// Mock dữ liệu giỏ hàng mẫu
-interface CartItem {
-    _id: string;
-    name: string;
-    price: number;
-    originalPrice?: number;
-    image: string;
-    size: string;
-    color: string;
-    quantity: number;
-}
 
 export default function CartPage() {
     const navigate = useNavigate();
 
-    // State quản lý danh sách sản phẩm trong giỏ
-    const [cartItems, setCartItems] = useState<CartItem[]>([
-        {
-            _id: '1',
-            name: 'Áo Sơ Mi Nam Công Sở Slim Fit',
-            price: 590000,
-            originalPrice: 790000,
-            image: 'https://via.placeholder.com/100x120',
-            size: '39',
-            color: 'Trắng',
-            quantity: 2,
-        },
-        {
-            _id: '2',
-            name: 'Quần Tây Nam Cao Cấp Form Dáng Chuẩn',
-            price: 850000,
-            image: 'https://via.placeholder.com/100x120',
-            size: '30',
-            color: 'Đen',
-            quantity: 1,
-        },
-    ]);
+    // 1. Gọi API lấy giỏ hàng từ server
+    const {data: purchasesInCartData, refetch} = useQuery({
+        queryKey: ['purchases', {status: purchasesStatus.inCart}],
+        queryFn: () => purchaseApi.getPurchases({status: purchasesStatus.inCart})
+    });
 
-    // State quản lý các sản phẩm được chọn để thanh toán
+    // Delete item form cart
+    const deletePurchases = useMutation({
+        mutationFn: purchaseApi.deletePurchase,
+        onSuccess: () => {
+            refetch()
+        }
+    })
+
+    const updatePurchase = useMutation({
+        mutationFn: purchaseApi.updatePurchase,
+        onSuccess: () => {
+            refetch()
+        }
+    })
+
+    const purchases: Purchase[] = purchasesInCartData?.data.data || [];
+
+    // State quản lý các sản phẩm được chọn để thanh toán (lưu id)
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
-    // Xử lý thay đổi số lượng sản phẩm
+    // Xử lý thay đổi số lượng sản phẩm (Gọi API update ở đây sau)
     const handleQuantityChange = (id: string, quantity: number | null) => {
+        console.log(id, quantity);
         if (!quantity) return;
-        setCartItems(prev =>
-            prev.map(item => item._id === id ? {...item, quantity} : item)
-        );
+        updatePurchase.mutate({product_id: id, buy_count: quantity})
     };
 
     // Xóa sản phẩm khỏi giỏ
     const handleRemoveItem = (id: string) => {
-        setCartItems(prev => prev.filter(item => item._id !== id));
-        setSelectedRowKeys(prev => prev.filter(key => key !== id));
+        setSelectedRowKeys(prev => prev.filter(key => key !== id))
+        deletePurchases.mutate([id])
     };
 
-    // Cấu hình các cột cho bảng Ant Design Table
+    // 2. Cấu hình các cột khớp với cấu trúc object Purchase của API
     const columns = [
         {
             title: 'Sản phẩm',
-            dataIndex: 'name',
-            key: 'name',
-            render: (_: any, record: CartItem) => (
+            dataIndex: 'product',
+            key: 'product',
+            render: (_: any, record: Purchase) => (
                 <div className="flex items-center gap-4">
                     <Image
-                        src={record.image}
-                        alt={record.name}
+                        src={record.product.image}
+                        alt={record.product.name}
                         width={80}
                         height={100}
                         className="object-cover border border-gray-200"
                         preview={false}
                     />
                     <div>
-                        <h4 className="font-medium text-sm text-gray-900 m-0 line-clamp-2">{record.name}</h4>
-                        <p className="text-xs text-gray-500 mt-1">Màu: {record.color} | Size: {record.size}</p>
+                        <h4 className="font-medium text-sm text-gray-900 m-0 line-clamp-2">
+                            {record.product.name}
+                        </h4>
+                        <p className="text-xs text-gray-500 mt-1">
+                            Phân loại: {record.product.category?.name || 'Mặc định'}
+                        </p>
                     </div>
                 </div>
             ),
@@ -96,15 +91,15 @@ export default function CartPage() {
         },
         {
             title: 'Số lượng',
-            dataIndex: 'quantity',
-            key: 'quantity',
+            dataIndex: 'buy_count',
+            key: 'buy_count',
             width: 130,
-            render: (_: any, record: CartItem) => (
+            render: (_: any, record: Purchase) => (
                 <InputNumber
                     min={1}
                     max={99}
-                    value={record.quantity}
-                    onChange={(val) => handleQuantityChange(record._id, val)}
+                    value={record.buy_count}
+                    onChange={(val) => handleQuantityChange(record.product._id, val)}
                     className="rounded-none text-center"
                 />
             ),
@@ -113,9 +108,9 @@ export default function CartPage() {
             title: 'Thành tiền',
             key: 'total',
             width: 150,
-            render: (_: any, record: CartItem) => (
+            render: (_: any, record: Purchase) => (
                 <span className="font-bold text-sm text-black">
-                    {(record.price * record.quantity).toLocaleString('vi-VN')} đ
+                    {(record.price * record.buy_count).toLocaleString('vi-VN')} đ
                 </span>
             ),
         },
@@ -123,7 +118,7 @@ export default function CartPage() {
             title: '',
             key: 'action',
             width: 60,
-            render: (_: any, record: CartItem) => (
+            render: (_: any, record: Purchase) => (
                 <Button
                     type="text"
                     icon={<DeleteOutlined className="text-gray-400 hover:text-red-600 text-base"/>}
@@ -141,16 +136,16 @@ export default function CartPage() {
         },
     };
 
-    // Tính tổng tiền các sản phẩm được chọn
-    const selectedItems = cartItems.filter(item => selectedRowKeys.includes(item._id));
-    const totalPrice = selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    // 3. Tính tổng tiền dựa hoàn toàn trên dữ liệu API thực tế (`purchases`)
+    const selectedItems = purchases.filter(item => selectedRowKeys.includes(item._id));
+    const totalPrice = selectedItems.reduce((sum, item) => sum + item.price * item.buy_count, 0);
 
     return (
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
             {/* Tiêu đề trang */}
-            <div className="flex items-center justify-between pb-6 border-b border-gray-200 mb-8">
+            <div className="flex items-center justify-between border-b border-gray-200 mb-8">
                 <Title level={3} className="uppercase m-0 tracking-wider">
-                    Giỏ Hàng Của Bạn ({cartItems.length})
+                    Giỏ Hàng Của Bạn ({purchases.length})
                 </Title>
                 <Button
                     type="link"
@@ -162,7 +157,7 @@ export default function CartPage() {
                 </Button>
             </div>
 
-            {cartItems.length === 0 ? (
+            {purchases.length === 0 ? (
                 /* Giao diện khi giỏ hàng trống */
                 <div className="text-center py-20 bg-gray-50 border border-dashed border-gray-300">
                     <ShoppingOutlined className="text-5xl text-gray-300 mb-4"/>
@@ -179,11 +174,11 @@ export default function CartPage() {
                 /* Giao diện chính: 2 cột (Bảng sản phẩm + Thanh toán) */
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-                    {/* CỘT TRÁI: BẢNG SẢN PHẨM (Chiếm 8/12 cột trên màn hình lớn) */}
+                    {/* CỘT TRÁI: BẢNG SẢN PHẨM */}
                     <div className="lg:col-span-8 overflow-x-auto">
                         <Table
                             rowKey="_id"
-                            dataSource={cartItems}
+                            dataSource={purchases}
                             columns={columns}
                             rowSelection={rowSelection}
                             pagination={false}
@@ -191,7 +186,7 @@ export default function CartPage() {
                         />
                     </div>
 
-                    {/* CỘT PHẢI: TỔNG KẾT ĐƠN HÀNG (Chiếm 4/12 cột) */}
+                    {/* CỘT PHẢI: TỔNG KẾT ĐƠN HÀNG */}
                     <div className="lg:col-span-4 bg-gray-50 p-6 border border-gray-200">
                         <Title level={5} className="uppercase tracking-wider pb-4 border-b border-gray-200 m-0">
                             Cộng Giỏ Hàng
