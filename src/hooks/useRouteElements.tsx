@@ -9,6 +9,8 @@ import Account from "../pages/Account";
 import Product from "../pages/Product";
 import Cart from "../pages/Cart";
 import ProductDetail from "../pages/ProductDetail";
+import HistoryPurchase from "../pages/HistoryPurchase/HistoryPurchase.tsx";
+import ChangePassword from "../pages/ChangePassword/ChangePassword.tsx";
 
 function ProtectedRoute() {
     const {isAuthenticated} = useContext(AppContext)
@@ -30,12 +32,12 @@ const useRouteElements = () => {
                     path: '',
                     element: <MainLayout/>,
                     children: [
-                        // {
-                        //     path: "/account/login",
-                        //     element: (
-                        //         <Login/>
-                        //     )
-                        // },
+                        {
+                            path: "/account/login",
+                            element: (
+                                <Login/>
+                            )
+                        },
                         {
                             path: "/account/register",
                             element: (
@@ -59,7 +61,31 @@ const useRouteElements = () => {
                             element: (
                                 <Account/>
                             )
-                        }
+                        },
+                        {
+                            path: "/user/profile",
+                            element: (
+                                <Account/>
+                            )
+                        },
+                        {
+                            path: "/user/purchase",
+                            element: (
+                                <HistoryPurchase/>
+                            )
+                        },
+                        {
+                            path: "/user/password",
+                            element: (
+                                <ChangePassword/>
+                            )
+                        },
+                        {
+                            path: "/cart",
+                            element: (
+                                <Cart/>
+                            )
+                        },
                     ]
                 }
             ]
@@ -82,29 +108,11 @@ const useRouteElements = () => {
                     )
                 },
                 {
-                    path: "/account",
-                    element: (
-                        <Account/>
-                    )
-                },
-                {
-                    path: "/cart",
-                    element: (
-                        <Cart/>
-                    )
-                },
-                {
                     path: "/products/:name",
                     element: (
                         <ProductDetail/>
                     )
-                },
-                {
-                    path: "/account/login",
-                    element: (
-                        <Login/>
-                    )
-                },
+                }
             ]
         }
     ])

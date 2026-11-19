@@ -97,10 +97,10 @@ const App = () => {
                             <SearchBar handleSearch={handleSearch}/>
                         </li>
                         <li className="cursor-pointer hover:text-black transition-colors">
-                            <Link to="/account"> <UserOutlined/></Link>
+                            <Link to="/user/profile"> <UserOutlined/></Link>
                         </li>
                         <li className="cursor-pointer hover:text-black transition-colors">
-                            <Link to={"/products"}><HeartOutlined/></Link>
+                            <Link to="/products"><HeartOutlined/></Link>
                         </li>
                         <li className="cursor-pointer hover:text-black transition-colors">
                             <Link to="/cart"> <ShoppingOutlined/></Link>

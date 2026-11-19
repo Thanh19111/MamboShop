@@ -50,7 +50,6 @@ export default function CartPage() {
 
     // Xử lý thay đổi số lượng sản phẩm (Gọi API update ở đây sau)
     const handleQuantityChange = (id: string, quantity: number | null) => {
-        console.log(id, quantity);
         if (!quantity) return;
         updatePurchase.mutate({product_id: id, buy_count: quantity})
     };
@@ -62,13 +61,13 @@ export default function CartPage() {
     };
 
     const handlePurchaseOrder = () => {
-        if (selectedItems.length > 0) {
-            const body = selectedItems.map((purchase) => ({
-                product_id: purchase.product._id,
-                buy_count: purchase.buy_count
-            }))
-            purchaseOrder.mutate(body)
-        }
+        if (selectedItems.length <= 0) return
+
+        const body = selectedItems.map((purchase) => ({
+            product_id: purchase.product._id,
+            buy_count: purchase.buy_count
+        }))
+        purchaseOrder.mutate(body)
     }
 
     // 2. Cấu hình các cột khớp với cấu trúc object Purchase của API

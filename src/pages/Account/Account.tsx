@@ -1,7 +1,7 @@
 import {Button, DatePicker, Flex, Form, Input, type MenuProps, Typography} from 'antd';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import {CarOutlined, MailOutlined, ShoppingOutlined, UserOutlined} from "@ant-design/icons";
+import {KeyOutlined, MailOutlined, ShoppingOutlined, UserOutlined} from "@ant-design/icons";
 import SubMenu from "./components/SubMenu";
 import {useContext} from "react";
 import {AppContext} from "../../contexts/app.context.tsx";
@@ -10,6 +10,7 @@ import userApi from "../../apis/user.api.ts";
 import {setProfileToLS} from "../../utils/auth.ts";
 import authApi from "../../apis/auth.api.ts";
 import {purchasesStatus} from "../../constants/purchase.ts";
+import {Link} from "react-router-dom";
 
 const {Title} = Typography;
 dayjs.extend(utc);
@@ -26,17 +27,17 @@ const accountMenuItems: MenuProps['items'] = [
     {
         key: 'profile',
         icon: <UserOutlined/>,
-        label: <span className="font-medium">Thông Tin Cá Nhân</span>,
+        label: <Link to="/user/profile"><span className="font-medium">Thông Tin Cá Nhân</span></Link>,
     },
     {
         key: 'history',
         icon: <ShoppingOutlined/>,
-        label: <span className="font-medium">Lịch Sử Đặt Hàng</span>,
+        label: <Link to="/user/purchase"><span className="font-medium">Lịch Sử Đặt Hàng</span></Link>
     },
     {
-        key: 'shipping',
-        icon: <CarOutlined/>,
-        label: <span className="font-medium">Thông Tin Giao Hàng</span>,
+        key: 'password',
+        icon: <KeyOutlined />,
+        label: <Link to="/user/password"><span className="font-medium">Đổi mật khẩu</span></Link>,
     },
     {
         key: 'newsletter',
@@ -97,7 +98,6 @@ export default function UserProfileForm() {
         })
     }
 
-    console.log(profile)
     return (
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
             <Flex justify="center" gap={48} className="flex-col md:flex-row">
