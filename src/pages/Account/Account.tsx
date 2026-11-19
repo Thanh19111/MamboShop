@@ -2,15 +2,11 @@ import {Button, DatePicker, Flex, Form, Input, type MenuProps, Typography} from 
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import {KeyOutlined, MailOutlined, ShoppingOutlined, UserOutlined} from "@ant-design/icons";
-import SubMenu from "./components/SubMenu";
-import {useContext} from "react";
-import {AppContext} from "../../contexts/app.context.tsx";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
+import SubMenu from "../../components/SubMenu";
+import {useMutation} from "@tanstack/react-query";
 import userApi from "../../apis/user.api.ts";
-import {setProfileToLS} from "../../utils/auth.ts";
-import authApi from "../../apis/auth.api.ts";
-import {purchasesStatus} from "../../constants/purchase.ts";
 import {Link} from "react-router-dom";
+import useCurrentUser from "../../hooks/useCurrentUser.tsx";
 
 const {Title} = Typography;
 dayjs.extend(utc);
@@ -36,7 +32,7 @@ const accountMenuItems: MenuProps['items'] = [
     },
     {
         key: 'password',
-        icon: <KeyOutlined />,
+        icon: <KeyOutlined/>,
         label: <Link to="/user/password"><span className="font-medium">Đổi mật khẩu</span></Link>,
     },
     {
@@ -47,10 +43,8 @@ const accountMenuItems: MenuProps['items'] = [
 ];
 
 export default function UserProfileForm() {
-    const {profile, reset, setProfile, setIsAuthenticated} = useContext(AppContext);
     const [form] = Form.useForm();
-
-    const queryClient = useQueryClient()
+    const {profile, handleSetProfile, handleLogout} = useCurrentUser();
 
     const updateProfileMutation = useMutation({
         mutationFn: userApi.updateProfile
@@ -60,26 +54,11 @@ export default function UserProfileForm() {
         console.log('Lỗi validate:', errorInfo);
     };
 
-    const logoutMutation = useMutation({
-        mutationFn: authApi.logout,
-        onSuccess: () => {
-            console.log(111)
-            setIsAuthenticated(false)
-            setProfile(null)
-            queryClient.removeQueries({queryKey: ['purchases', {status: purchasesStatus.inCart}]})
-        }
-    })
-
-    const handleLogout = () => {
-        logoutMutation.mutate()
-    }
-
     const onFinish = (data: formData) => {
-        data.avatar = 'conchocaobangbopc';
+        data.avatar = 'dev';
         updateProfileMutation.mutate(data, {
             onSuccess: (res) => {
-                setProfile(res.data.data)
-                setProfileToLS(res.data.data)
+                handleSetProfile(res.data.data)
             },
             onError: (error: any) => {
                 const formError = error.response?.data?.data;
@@ -213,7 +192,6 @@ export default function UserProfileForm() {
                                 </Button>
                             </Form.Item>
                         </Form>
-
                     </div>
                 </div>
             </Flex>

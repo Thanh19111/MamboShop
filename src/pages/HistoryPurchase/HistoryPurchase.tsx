@@ -1,18 +1,16 @@
 import {Flex, type MenuProps, Typography} from 'antd';
-import {CarOutlined, KeyOutlined, MailOutlined, ShoppingOutlined, UserOutlined} from "@ant-design/icons";
-import {useContext} from "react";
-import {AppContext} from "../../contexts/app.context.tsx";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import authApi from "../../apis/auth.api.ts";
+import {KeyOutlined, MailOutlined, ShoppingOutlined, UserOutlined} from "@ant-design/icons";
+import {useQuery} from "@tanstack/react-query";
 import {purchasesStatus} from "../../constants/purchase.ts";
 import {createSearchParams, Link} from "react-router-dom";
-import SubMenu from "../Account/components/SubMenu";
+import SubMenu from "../../components/SubMenu";
 import useQueryParams from "../../hooks/useQueryParams.tsx";
 import purchaseApi from "../../apis/purchase.api.ts";
 import type {PurchaseListStatus} from "../../types/purchase.type.ts";
 import path from "../../constants/paths.ts";
 import classNames from 'classnames'
 import {formatCurrency, generateNameId} from "../../utils/utils.ts";
+import useCurrentUser from "../../hooks/useCurrentUser.tsx";
 
 const {Title} = Typography;
 
@@ -38,7 +36,7 @@ const accountMenuItems: MenuProps['items'] = [
     },
     {
         key: 'password',
-        icon: <KeyOutlined />,
+        icon: <KeyOutlined/>,
         label: <Link to="/user/password"><span className="font-medium">Đổi mật khẩu</span></Link>,
     },
     {
@@ -49,23 +47,7 @@ const accountMenuItems: MenuProps['items'] = [
 ];
 
 const App = () => {
-    const queryClient = useQueryClient()
-    const {profile, setProfile, setIsAuthenticated} = useContext(AppContext);
-
-    const logoutMutation = useMutation({
-        mutationFn: authApi.logout,
-        onSuccess: () => {
-            setIsAuthenticated(false)
-            setProfile(null)
-            queryClient.removeQueries({queryKey: ['purchases', {status: purchasesStatus.inCart}]})
-        }
-    })
-
-    const handleLogout = () => {
-        logoutMutation.mutate()
-    }
-
-
+    const {profile, handleLogout} = useCurrentUser();
     const queryParams: { status?: string } = useQueryParams()
     const status: number = Number(queryParams.status) || purchasesStatus.all
 
@@ -123,10 +105,10 @@ const App = () => {
                                         <div key={purchase._id}
                                              className='mt-4 rounded-sm border-black/10 bg-white p-6 text-gray-800 shadow-sm'>
                                             <Link to={`${path.products}/${generateNameId({
-                                                    name: purchase.product.name,
-                                                    id: purchase.product._id
-                                                })}`}
-                                                className='flex'>
+                                                name: purchase.product.name,
+                                                id: purchase.product._id
+                                            })}`}
+                                                  className='flex'>
                                                 <div className='flex-shrink-0'>
                                                     <img className='h-20 w-20 object-cover' src={purchase.product.image}
                                                          alt={purchase.product.name}/>
@@ -139,7 +121,8 @@ const App = () => {
                                                     <span className='truncate text-gray-500 line-through'>
                                                         ₫{formatCurrency(purchase.product.price_before_discount)}
                                                     </span>
-                                                    <span className='ml-2 truncate text-orange'>₫{formatCurrency(purchase.product.price)}</span>
+                                                    <span
+                                                        className='ml-2 truncate text-orange'>₫{formatCurrency(purchase.product.price)}</span>
                                                 </div>
                                             </Link>
                                             <div className='flex justify-end'>

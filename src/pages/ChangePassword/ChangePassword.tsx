@@ -1,13 +1,10 @@
 import {Button, Flex, Form, Input, type MenuProps, message, Typography} from 'antd';
-import {CarOutlined, KeyOutlined, LockOutlined, MailOutlined, ShoppingOutlined, UserOutlined} from '@ant-design/icons';
-import {useMutation, useQueryClient} from '@tanstack/react-query'
-import {useContext} from "react";
-import {AppContext} from "../../contexts/app.context.tsx";
-import authApi from "../../apis/auth.api.ts";
-import {purchasesStatus} from "../../constants/purchase.ts";
-import SubMenu from "../Account/components/SubMenu";
+import {KeyOutlined, LockOutlined, MailOutlined, ShoppingOutlined, UserOutlined} from '@ant-design/icons';
+import {useMutation} from '@tanstack/react-query'
+import SubMenu from "../../components/SubMenu";
 import {Link} from "react-router-dom";
 import userApi from "../../apis/user.api.ts";
+import useCurrentUser from "../../hooks/useCurrentUser.tsx";
 
 const {Title, Text} = Typography;
 
@@ -30,7 +27,7 @@ const accountMenuItems: MenuProps['items'] = [
     },
     {
         key: 'password',
-        icon: <KeyOutlined />,
+        icon: <KeyOutlined/>,
         label: <Link to="/user/password"><span className="font-medium">Đổi mật khẩu</span></Link>,
     },
     {
@@ -41,22 +38,7 @@ const accountMenuItems: MenuProps['items'] = [
 ];
 
 const App = () => {
-    const queryClient = useQueryClient()
-    const {profile, setProfile, setIsAuthenticated} = useContext(AppContext);
-
-    const logoutMutation = useMutation({
-        mutationFn: authApi.logout,
-        onSuccess: () => {
-            setIsAuthenticated(false)
-            setProfile(null)
-            queryClient.removeQueries({queryKey: ['purchases', {status: purchasesStatus.inCart}]})
-        }
-    })
-
-    const handleLogout = () => {
-        logoutMutation.mutate()
-    }
-
+    const {profile, handleLogout} = useCurrentUser();
     const [form] = Form.useForm<ChangePasswordFormValues>();
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -66,7 +48,7 @@ const App = () => {
             messageApi.success('Đổi mật khẩu thành công!');
             form.resetFields();
         },
-        onError: (error: any) => {
+        onError: () => {
             messageApi.error("Đổi mật khẩu thất bại. Vui lòng kiểm tra lại mật khẩu cũ.");
         },
     });
@@ -208,7 +190,6 @@ const App = () => {
                 </div>
             </Flex>
         </div>
-
     );
 }
 

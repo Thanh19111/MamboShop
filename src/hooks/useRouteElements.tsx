@@ -1,6 +1,6 @@
 import {Navigate, Outlet, useRoutes} from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
-import ProductList from "../pages/ProductList";
+import MainPage from "../pages/MainPage";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
 import {useContext} from "react";
@@ -11,6 +11,7 @@ import Cart from "../pages/Cart";
 import ProductDetail from "../pages/ProductDetail";
 import HistoryPurchase from "../pages/HistoryPurchase/HistoryPurchase.tsx";
 import ChangePassword from "../pages/ChangePassword/ChangePassword.tsx";
+import NotFound from "../pages/NotFound";
 
 function ProtectedRoute() {
     const {isAuthenticated} = useContext(AppContext)
@@ -98,7 +99,7 @@ const useRouteElements = () => {
                     path: "/",
                     index: true,
                     element: (
-                        <ProductList/>
+                        <MainPage/>
                     )
                 },
                 {
@@ -111,6 +112,12 @@ const useRouteElements = () => {
                     path: "/products/:name",
                     element: (
                         <ProductDetail/>
+                    )
+                },
+                {
+                    path: '*',
+                    element: (
+                        <NotFound/>
                     )
                 }
             ]
