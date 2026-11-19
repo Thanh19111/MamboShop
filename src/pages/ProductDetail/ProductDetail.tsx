@@ -1,4 +1,3 @@
-import React, {useState} from 'react';
 import DOMPurify from 'dompurify'
 import {Breadcrumb, Button, Image, InputNumber, Rate, Tabs, Typography} from 'antd';
 import {
@@ -8,7 +7,7 @@ import {
     ShoppingCartOutlined,
     SyncOutlined
 } from '@ant-design/icons';
-import {useNavigate, useParams} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import productApi from "../../apis/product.api.ts";
 import {getIdFromNameId} from "../../utils/utils.ts";
@@ -16,11 +15,11 @@ import type {Product} from "../../types/product.type.ts";
 import purchaseApi from "../../apis/purchase.api.ts";
 import {toast} from "react-toastify";
 import {purchasesStatus} from "../../constants/purchase.ts";
+import {useState} from "react";
 
 const {Title, Text, Paragraph} = Typography;
 
 export default function ProductDetailPage() {
-    const navigate = useNavigate()
     const queryClient = useQueryClient()
     const {name} = useParams();
     const id = getIdFromNameId(name as string)
@@ -34,7 +33,7 @@ export default function ProductDetailPage() {
         mutationFn: purchaseApi.addToCart
     })
 
-    const productD: Product = data?.data.data
+    const productD: Product | undefined = data?.data.data
 
     const [quantity, setQuantity] = useState(1);
     const [activeImage, setActiveImage] = useState('https://via.placeholder.com/600x800');
@@ -45,23 +44,6 @@ export default function ProductDetailPage() {
         'https://via.placeholder.com/600x800/eee/333',
         'https://via.placeholder.com/600x800/ccc/222',
     ];
-
-    // Mock thông tin sản phẩm
-    const product = {
-        name: 'Áo Sơ Mi Nam Công Sở Slim Fit Dài Tay Aristino',
-        sku: 'ASM01-TRG',
-        price: 790000,
-        originalPrice: 990000,
-        rating: 4.8,
-        reviewCount: 124,
-        description: 'Áo sơ mi nam công sở phom dáng Slim Fit ôm nhẹ cơ thể nhưng vẫn đảm bảo sự thoải mái tối đa khi vận động. Chất liệu vải cao cấp mềm mịn, ít nhăn, thấm hút mồ hôi tốt.',
-        colors: [
-            {name: 'Trắng', code: '#ffffff'},
-            {name: 'Xanh nhạt', code: '#dbeafe'},
-            {name: 'Đen', code: '#000000'}
-        ],
-        sizes: ['38', '39', '40', '41', '42']
-    };
 
     const handleAddToCart = () => {
         addToCart.mutate(
@@ -83,7 +65,7 @@ export default function ProductDetailPage() {
                 <div className="py-3">
                     <Breadcrumb
                         items={[
-                            {title: <span className="cursor-pointer" onClick={() => useNavigate('/')}>Trang chủ</span>},
+                            {title: <span className="cursor-pointer">Trang chủ</span>},
                             {title: <span className="cursor-pointer">{productD.category.name}</span>},
                             {title: <span className="text-black font-medium">{productD.name}</span>},
                         ]}
@@ -99,7 +81,7 @@ export default function ProductDetailPage() {
                         <div className="border border-gray-200 overflow-hidden bg-gray-50">
                             <Image
                                 src={activeImage}
-                                alt={product.name}
+                                alt={productD.name}
                                 className="w-full h-[550px] object-cover"
                                 preview={false}
                             />

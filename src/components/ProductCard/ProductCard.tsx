@@ -28,10 +28,9 @@ const App = ({product}: Props) => {
 
                         {/* Ảnh sản phẩm tràn viền */}
                         <img
-                            alt={name}
                             src={product.image}
                             className="w-full h-full object-cover object-center"
-                        />
+                            alt={"#"}/>
 
                         {/* Nút dấu cộng (+) góc dưới bên phải ảnh */}
                         <button

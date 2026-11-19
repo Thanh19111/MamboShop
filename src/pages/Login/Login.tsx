@@ -56,7 +56,7 @@ export default function Login() {
     };
 
     // 3. Hàm xử lý khi validate lỗi
-    const onFinishFailed = (errorInfo) => {
+    const onFinishFailed = (errorInfo: any) => {
         console.log('Lỗi validate:', errorInfo);
     };
 

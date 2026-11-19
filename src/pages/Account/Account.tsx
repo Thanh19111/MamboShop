@@ -50,13 +50,20 @@ export default function UserProfileForm() {
         mutationFn: userApi.updateProfile
     })
 
-    const onFinishFailed = (errorInfo) => {
+    const onFinishFailed = (errorInfo: any) => {
         console.log('Lỗi validate:', errorInfo);
     };
 
     const onFinish = (data: formData) => {
-        data.avatar = 'dev';
-        updateProfileMutation.mutate(data, {
+        const body = {
+            name: data.name,
+            phone: data.phone,
+            address: data.address,
+            avatar: "dev",
+            date_of_birth: data.date_of_birth.toString()
+        }
+
+        updateProfileMutation.mutate(body, {
             onSuccess: (res) => {
                 handleSetProfile(res.data.data)
             },

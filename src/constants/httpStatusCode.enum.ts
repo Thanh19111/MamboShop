@@ -1,3 +1,4 @@
+// @ts-ignore
 enum HttpStatusCode {
   Continue = 100,
   SwitchingProtocols = 101,
