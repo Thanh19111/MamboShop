@@ -9,8 +9,7 @@ interface Props {
 
 const App = ({
                  placeholder = "Tìm kiếm sản phẩm...",
-                 handleSearch
-             }: Props) => {
+                 handleSearch}: Props) => {
     return (
         <Search size={"medium"} placeholder={placeholder} onSearch={handleSearch} enterButton/>
     );

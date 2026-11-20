@@ -14,8 +14,7 @@ const App = ({queryConfig}: Props) => {
 
     const handleRateChange = (value: number) => {
         setSelectedRating(value);
-
-        console.log(queryConfig)
+        
         navigate({
             pathname: path.products,
             search: createSearchParams({

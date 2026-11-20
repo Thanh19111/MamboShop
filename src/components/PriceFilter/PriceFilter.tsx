@@ -14,7 +14,7 @@ const App = ({queryConfig}: Props) => {
     const navigate = useNavigate();
 
     const handleApplyPrice = () => {
-        if (!isValid(priceMin, priceMax)) return
+        if (!isValidPrice(priceMin, priceMax)) return
         navigate({
             pathname: path.products,
             search: createSearchParams({
@@ -25,10 +25,10 @@ const App = ({queryConfig}: Props) => {
         })
     }
 
-    const isValid = (priceMin: string, priceMax: string): boolean => {
+    const isValidPrice = (priceMin: string, priceMax: string): boolean => {
         try {
-            let min = parseFloat(priceMin)
-            let max = parseFloat(priceMax)
+            const min = parseFloat(priceMin)
+            const max = parseFloat(priceMax)
             return max >= min
         } catch {
             return false;
