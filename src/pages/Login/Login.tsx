@@ -20,7 +20,7 @@ const menuItems: MenuProps['items'] = [
     }
 ];
 
-export default function Login() {
+const App = () => {
     const {setIsAuthenticated, setProfile} = useContext(AppContext)
     const navigate = useNavigate()
     const [form] = Form.useForm();
@@ -112,3 +112,5 @@ export default function Login() {
         </div>
     )
 }
+
+export default App;

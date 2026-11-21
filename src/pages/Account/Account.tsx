@@ -7,6 +7,7 @@ import {useMutation} from "@tanstack/react-query";
 import userApi from "../../apis/user.api.ts";
 import {Link} from "react-router-dom";
 import useCurrentUser from "../../hooks/useCurrentUser.tsx";
+import {toast} from "react-toastify";
 
 const {Title} = Typography;
 dayjs.extend(utc);
@@ -42,7 +43,7 @@ const accountMenuItems: MenuProps['items'] = [
     },
 ];
 
-export default function UserProfileForm() {
+const App = () => {
     const [form] = Form.useForm();
     const {profile, handleSetProfile, handleLogout} = useCurrentUser();
 
@@ -60,12 +61,13 @@ export default function UserProfileForm() {
             phone: data.phone,
             address: data.address,
             avatar: "dev",
-            date_of_birth: data.date_of_birth.toString()
+            date_of_birth: new Date(data.date_of_birth).toISOString()
         }
 
         updateProfileMutation.mutate(body, {
             onSuccess: (res) => {
                 handleSetProfile(res.data.data)
+                toast.success('Đổi thông tin cá nhân thành công')
             },
             onError: (error: any) => {
                 const formError = error.response?.data?.data;
@@ -205,3 +207,5 @@ export default function UserProfileForm() {
         </div>
     );
 }
+
+export default App;

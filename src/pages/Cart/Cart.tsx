@@ -10,7 +10,7 @@ import {toast} from "react-toastify";
 
 const {Title} = Typography;
 
-export default function CartPage() {
+const App = () => {
     const navigate = useNavigate();
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
@@ -249,3 +249,5 @@ export default function CartPage() {
         </div>
     );
 }
+
+export default App;
