@@ -35,7 +35,6 @@ const App = () => {
     const products = productsData?.data.data.products || []
     const pagination = productsData?.data.data.pagination
 
-
     return (
         <div className="mx-auto p-4 bg-white">
             <Layout>

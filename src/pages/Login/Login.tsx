@@ -61,7 +61,7 @@ export default function Login() {
     };
 
     return (
-        <div className='bg-white'>
+        <div className='bg-white min-h-screen py-8 border border-gray-200'>
             <Menu mode="horizontal"
                   selectedKeys={["login"]}
                   items={menuItems}

@@ -1,33 +1,16 @@
 import axios, {type AxiosError, type AxiosInstance} from "axios";
-import {
-    clearLS,
-    getAccessTokenFromLS,
-    getRefreshTokenFromLS,
-    setAccessTokenToLS,
-    setProfileToLS,
-    setRefreshTokenToLS
-} from "./auth.ts";
+import {clearLocalStorage, getToken, handleLogin, handleLogout, setToken} from "./auth.ts";
 import type {AuthResponse, RefreshTokenResponse} from "../types/auth.type.ts";
 import HttpStatusCode from "../constants/httpStatusCode.enum.ts";
 import {toast} from "react-toastify";
-import {isAxiosExpiredTokenError, isAxiosUnauthorizedError} from "./utils.ts";
+import {isExpiredToken, isUnauthorized} from "./utils.ts";
 import type {ErrorResponse} from "../types/response.type.ts";
 import {URL_REFRESH_TOKEN} from "../apis/auth.api.ts";
 
-const apiUrl = 'https://api-ecom.duthanhduoc.com/';
+const apiUrl = import.meta.env.VITE_API_BASE_URL
 const URL_LOGIN = "login"
 const URL_REGISTER = "register"
 const URL_LOGOUT = "logout"
-
-const handleLogin = (data: AuthResponse) => {
-    setAccessTokenToLS(data.data.access_token);
-    setRefreshTokenToLS(data.data.refresh_token);
-    setProfileToLS(data.data.user)
-}
-
-const handleLogout = () => {
-    clearLS()
-}
 
 export class Http {
     public instance: AxiosInstance
@@ -36,8 +19,8 @@ export class Http {
     public refreshTokenRequest: Promise<string> | null
 
     constructor() {
-        this.accessToken = getAccessTokenFromLS()
-        this.refreshToken = getRefreshTokenFromLS()
+        this.accessToken = getToken('access_token')
+        this.refreshToken = getToken('refresh_token')
         this.refreshTokenRequest = null
         this.instance = axios.create({
             baseURL: apiUrl,
@@ -79,9 +62,7 @@ export class Http {
             },
             (error: AxiosError) => {
                 // Chỉ toast lỗi không phải 422 và 401
-                if (
-                    ![HttpStatusCode.UnprocessableEntity, HttpStatusCode.Unauthorized].includes(error.response?.status as number)
-                ) {
+                if (![HttpStatusCode.UnprocessableEntity, HttpStatusCode.Unauthorized].includes(error.response?.status as number)) {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const data: any | undefined = error.response?.data
                     const message = data?.message || error.message
@@ -94,12 +75,12 @@ export class Http {
                 // - Token hết hạn*
 
                 // Nếu là lỗi 401
-                if (isAxiosUnauthorizedError<ErrorResponse<{ name: string; message: string }>>(error)) {
+                if (isUnauthorized<ErrorResponse<{ name: string; message: string }>>(error)) {
                     const config = error.response?.config || {headers: {}, url: ''}
                     const {url} = config
                     // Trường hợp Token hết hạn và request đó không phải là của request refresh token
                     // thì chúng ta mới tiến hành gọi refresh token
-                    if (isAxiosExpiredTokenError(error) && url !== URL_REFRESH_TOKEN) {
+                    if (isExpiredToken(error) && url !== URL_REFRESH_TOKEN) {
                         // Hạn chế gọi 2 lần handleRefreshToken
                         this.refreshTokenRequest = this.refreshTokenRequest
                             ? this.refreshTokenRequest
@@ -119,10 +100,9 @@ export class Http {
                     // không truyền token,
                     // token hết hạn nhưng gọi refresh token bị fail
                     // thì tiến hành xóa local storage và toast message
-
-                    clearLS()
                     this.accessToken = ''
                     this.refreshToken = ''
+                    clearLocalStorage()
                     toast.error(error.response?.data.data?.message || error.response?.data.message)
                     // window.location.reload()
                 }
@@ -138,12 +118,12 @@ export class Http {
             })
             .then((res) => {
                 const {access_token} = res.data.data
-                setAccessTokenToLS(access_token)
+                setToken('access_token', access_token)
                 this.accessToken = access_token
                 return access_token
             })
             .catch((error) => {
-                clearLS()
+                clearLocalStorage()
                 this.accessToken = ''
                 this.refreshToken = ''
                 throw error

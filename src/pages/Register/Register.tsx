@@ -65,7 +65,7 @@ export default function Register() {
     })
 
     return (
-        <div className='bg-white py-[64px]'>
+        <div className='bg-white min-h-screen py-8 border border-gray-200'>
             <Menu mode="horizontal"
                   selectedKeys={["register"]}
                   style={{fontSize: "12px"}}

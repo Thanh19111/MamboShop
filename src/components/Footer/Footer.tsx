@@ -103,9 +103,9 @@ const App = () => {
             </Col>
         </Row>
 
-        <Row className='py-[40px]' gutter={[48, 32]}>
+        <Row className='py-[32px]' gutter={[32, 16]}>
             <Col xs={24} lg={11}>
-                <Flex vertical gap="large">
+                <Flex vertical gap="medium">
                     <Flex gap="middle" align="flex-start">
                         <img
                             src="https://i.pinimg.com/236x/86/c8/5f/86c85f53a3d898d998c4d7b12b56948d.jpg"
@@ -117,8 +117,7 @@ const App = () => {
                                 CÔNG TY CỔ PHẦN ĐẦU TƯ K&G VIỆT NAM
                             </Title>
                             <Text style={{color: '#aaa'}}>
-                                Trụ sở chính: Tầng 11, Khối A, Tòa nhà Sông Đà, Đường Phạm Hùng, Phường Từ Liêm, TP
-                                Hà Nội
+                                Trụ sở chính: Tầng 11, Khối A, Tòa nhà Sông Đà, Đường Phạm Hùng, Phường Từ Liêm, TP Hà Nội
                             </Text>
                             <Text style={{color: '#aaa'}}>
                                 Chi Nhánh: 84 Nguyễn Trãi, Phường Chợ Quán, Hồ Chí Minh, Việt Nam.
@@ -128,7 +127,7 @@ const App = () => {
                     </Flex>
                     <div>
                         <Title
-                            style={{color: '#fff', fontSize: '14px', textTransform: 'uppercase', marginBottom: 8}}>
+                            style={{color: '#fff', fontSize: '14px', textTransform: 'uppercase', marginBottom: 8, marginTop: 8}}>
                             Đăng ký nhận tin điện tử
                         </Title>
                         <Text style={{color: '#aaa', display: 'block', marginBottom: 12}}>
@@ -189,8 +188,7 @@ const App = () => {
                     <Row gutter={[16, 16]}>
                         <Col xs={24} sm={8}>
                             <Title className='py-2'
-                                   style={{color: '#fff', fontSize: '14px', textTransform: 'uppercase'}}>Về chúng
-                                tôi</Title>
+                                   style={{color: '#fff', fontSize: '14px', textTransform: 'uppercase'}}>Về chúng tôi</Title>
                             <Flex vertical gap="small">
                                 <Link to='#' style={{color: '#aaa'}}>Giới thiệu Aristino</Link>
                                 <Link to='#' style={{color: '#aaa'}}>Cửa hàng gần bạn</Link>
@@ -203,9 +201,7 @@ const App = () => {
                         </Col>
 
                         <Col xs={24} sm={8}>
-                            <Title className='py-2'
-                                   style={{color: '#fff', fontSize: '14px', textTransform: 'uppercase'}}>Chính sách
-                                & Điều khoản</Title>
+                            <Title className='py-2' style={{color: '#fff', fontSize: '14px', textTransform: 'uppercase'}}>Chính sách & Điều khoản</Title>
                             <Flex vertical gap="small">
                                 <Link to='#' style={{color: '#aaa'}}>Chính sách hội viên</Link>
                                 <Link to='#' style={{color: '#aaa'}}>Chính sách giao hàng</Link>
@@ -218,9 +214,7 @@ const App = () => {
                         </Col>
 
                         <Col xs={24} sm={8}>
-                            <Title className='py-2'
-                                   style={{color: '#fff', textTransform: 'uppercase', fontSize: '14px'}}>Dịch vụ
-                                khách hàng</Title>
+                            <Title className='py-2' style={{color: '#fff', textTransform: 'uppercase', fontSize: '14px'}}>Dịch vụ khách hàng</Title>
                             <Flex vertical gap="small">
                                 <Link to='#' style={{color: '#aaa'}}>Trạng thái đơn hàng</Link>
                                 <Link to='#' style={{color: '#aaa'}}>Câu hỏi thường gặp</Link>
