@@ -45,7 +45,8 @@ const accountMenuItems: MenuProps['items'] = [
 
 const App = () => {
     const [form] = Form.useForm();
-    const {profile, handleSetProfile, handleLogout} = useCurrentUser();
+    const {profile, logoutMutation, handleUpdateProfile} = useCurrentUser();
+    const handleLogout = () => logoutMutation.mutate()
 
     const updateProfileMutation = useMutation({
         mutationFn: userApi.updateProfile
@@ -66,7 +67,7 @@ const App = () => {
 
         updateProfileMutation.mutate(body, {
             onSuccess: (res) => {
-                handleSetProfile(res.data.data)
+                handleUpdateProfile(res.data.data)
                 toast.success('Đổi thông tin cá nhân thành công')
             },
             onError: (error: any) => {

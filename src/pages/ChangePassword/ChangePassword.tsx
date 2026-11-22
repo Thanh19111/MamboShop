@@ -38,9 +38,13 @@ const accountMenuItems: MenuProps['items'] = [
 ];
 
 const App = () => {
-    const {profile, handleLogout} = useCurrentUser();
+    const {profile, logoutMutation} = useCurrentUser();
     const [form] = Form.useForm<ChangePasswordFormValues>();
     const [messageApi, contextHolder] = message.useMessage();
+
+    const handleLogout = () => {
+        logoutMutation.mutate()
+    }
 
     const changePasswordMutation = useMutation({
         mutationFn: userApi.updateProfile,

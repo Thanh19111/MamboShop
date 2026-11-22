@@ -2,7 +2,8 @@ node_modules/
 dist/
 .git/
 .gitignore
-.nvmrc
-.env
-.env.*
 *.log
+
+#.env
+#.env.*
+#.nvmrc

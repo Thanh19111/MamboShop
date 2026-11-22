@@ -47,7 +47,7 @@ const accountMenuItems: MenuProps['items'] = [
 ];
 
 const App = () => {
-    const {profile, handleLogout} = useCurrentUser();
+    const {profile, logoutMutation} = useCurrentUser();
     const queryParams: { status?: string } = useQueryParams()
     const status: number = Number(queryParams.status) || purchasesStatus.all
 
@@ -56,8 +56,9 @@ const App = () => {
         queryFn: () => purchaseApi.getPurchases({status: status as PurchaseListStatus})
     })
 
-    const purchasesInCart = purchasesInCartData?.data.data
+    const handleLogout = () => logoutMutation.mutate()
 
+    const purchasesInCart = purchasesInCartData?.data.data
     const purchaseTabsLink = purchaseTabs.map((tab) => (
         <Link
             key={tab.status}

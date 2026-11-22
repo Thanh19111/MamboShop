@@ -1,13 +1,8 @@
 import {Link, useNavigate} from 'react-router-dom'
-
-import {useContext} from 'react'
 import {Button, Flex, Form, Input, Menu, type MenuProps} from "antd";
-import {AppContext} from "../../contexts/app.context.tsx";
 import {type Schema} from "../../utils/rules.ts";
-import {useMutation} from "@tanstack/react-query";
-import authApi from "../../apis/auth.api.ts";
-
-type FormData = Pick<Schema, 'email' | 'password'>
+import useCurrentUser from "../../hooks/useCurrentUser.tsx";
+import {toast} from "react-toastify";
 
 const menuItems: MenuProps['items'] = [
     {
@@ -20,22 +15,18 @@ const menuItems: MenuProps['items'] = [
     }
 ];
 
+type LoginForm = Pick<Schema, 'email' | 'password'>
+
 const App = () => {
-    const {setIsAuthenticated, setProfile} = useContext(AppContext)
+    const {loginMutation} = useCurrentUser();
     const navigate = useNavigate()
     const [form] = Form.useForm();
 
-    const loginMutation = useMutation({
-        mutationFn: (body: FormData) => authApi.login(body)
-    })
-
     // 2. Hàm xử lý khi submit thành công
-    const onFinish = (data: FormData) => {
-        console.log(data)
+    const onFinish = (data: LoginForm) => {
         loginMutation.mutate(data, {
-            onSuccess: (data) => {
-                setIsAuthenticated(true)
-                setProfile(data.data.data.user)
+            onSuccess: () => {
+                toast.success('Đăng nhập thành công')
                 navigate('/')
             },
             onError: (error: any) => {
