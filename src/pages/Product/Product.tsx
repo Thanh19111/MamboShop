@@ -1,4 +1,4 @@
-import {Col, Layout, Row, Typography} from 'antd';
+import {Button, Col, Drawer, Flex, Layout, Row, Space, Typography} from 'antd';
 import ProductCard from "../../components/ProductCard";
 import useQueryConfig from "../../hooks/useQueryConfig.tsx";
 import {useQuery} from "@tanstack/react-query";
@@ -8,6 +8,8 @@ import Pagination from "../../components/Pagination";
 import AsideFilter from "../../components/AsideFilter";
 import categoryApi from "../../apis/category.api.ts";
 import Sort from "../../components/Sort/Sort.tsx";
+import {useState} from "react";
+import {UnorderedListOutlined} from "@ant-design/icons";
 
 const {Sider, Content} = Layout;
 const {Title} = Typography;
@@ -35,6 +37,8 @@ const App = () => {
     const products = productsData?.data.data.products || []
     const pagination = productsData?.data.data.pagination
 
+    const [open, setOpen] = useState(false);
+
     return (
         <div className="mx-auto p-4 bg-white min-h-screen">
             <Layout>
@@ -46,14 +50,28 @@ const App = () => {
                 {/* 2. KHU VỰC HIỂN THỊ SẢN PHẨM BÊN PHẢI */}
                 <Content className="bg-white">
                     {/* Thanh công cụ phía trên (Tiêu đề + Sắp xếp) */}
-                    <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200">
+                    <div className="py-2 border-b border-gray-200">
                         <Title level={5} className="uppercase p-2">
                             Tất Cả Sản Phẩm
                         </Title>
-
-                        <div className="flex items-center gap-2">
+                        <Flex justify='space-between'>
+                            <div>
+                                <div className='ml-2 lg:hidden block'>
+                                    <Button onClick={() => setOpen(true)}>
+                                        <UnorderedListOutlined/>
+                                    </Button>
+                                </div>
+                            </div>
+                            <Drawer
+                                placement={'left'}
+                                onClose={() => setOpen(false)}
+                                open={open}
+                                key={'left'}
+                                size={350}>
+                                <AsideFilter queryConfig={queryConfig} categories={categories}/>
+                            </Drawer>
                             <Sort queryConfig={queryConfig}/>
-                        </div>
+                        </Flex>
                     </div>
 
                     {/* Lưới danh sách Product Card (Responsive: 2 cột mobile, 3 cột tablet, 4 cột desktop) */}

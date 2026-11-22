@@ -90,7 +90,7 @@ const App = () => {
                         <Text className="text-gray-500 text-sm mt-2 block">
                             Để bảo mật tài khoản, vui lòng không chia sẻ mật khẩu cho người khác.
                         </Text>
-                        <div className="py-4 w-[70%]">
+                        <div className="py-4 w-full md:w-1/2">
                             <Form
                                 form={form}
                                 layout="vertical"
