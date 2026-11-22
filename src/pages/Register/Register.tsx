@@ -3,11 +3,11 @@ import {useForm} from 'react-hook-form' // Vẫn giữ react-hook-form để val
 import {yupResolver} from '@hookform/resolvers/yup'
 import {useMutation} from '@tanstack/react-query'
 import omit from 'lodash/omit'
-import {useContext} from 'react'
-import {Button, Flex, Typography, Form, Input, Menu, type MenuProps} from "antd"
-import {AppContext} from "../../contexts/app.context.tsx"
+import {Button, Flex, Form, Input, Menu, type MenuProps, Typography} from "antd"
 import {schema, type Schema} from "../../utils/rules.ts"
 import authApi from "../../apis/auth.api.ts"
+import useCurrentUser from "../../hooks/useCurrentUser.tsx";
+import {toast} from "react-toastify";
 
 const {Text} = Typography
 type FormData = Pick<Schema, 'email' | 'password' | 'confirm_password'>
@@ -25,8 +25,8 @@ const menuItems: MenuProps['items'] = [
 ];
 
 export default function Register() {
-    const {setIsAuthenticated, setProfile} = useContext(AppContext)
     const navigate = useNavigate()
+    const {registerMutation} = useCurrentUser()
 
     // 1. Khởi tạo react-hook-form
     const {
@@ -55,10 +55,9 @@ export default function Register() {
     // 2. Hàm submit cuối cùng được gọi khi Antd Form validate thành công
     const onFinish = handleSubmit((data) => {
         const body = omit(data, ['confirm_password'])
-        registerAccountMutation.mutate(body, {
-            onSuccess: (data) => {
-                setIsAuthenticated(true)
-                setProfile(data.data.data.user)
+        registerMutation.mutate(body, {
+            onSuccess: () => {
+                toast.success('Tạo tài khoản thành công')
                 navigate('/')
             }
         })
@@ -85,7 +84,7 @@ export default function Register() {
                     >
                         {/* TRƯỜNG EMAIL */}
                         <Form.Item
-                            label={<span className="text-gray-800 font-medium text-sm">Email<Text type='danger'>*</Text></span>}
+                            label={<span className="text-gray-800 font-medium text-sm"><Text type='danger'>*</Text> Email</span>}
                             // Dùng validateStatus và help của Antd để hiển thị lỗi từ Yup
                             validateStatus={errors.email ? 'error' : ''}
                             help={errors.email?.message}
@@ -101,7 +100,7 @@ export default function Register() {
 
                         {/* TRƯỜNG MẬT KHẨU */}
                         <Form.Item
-                            label={<span className="text-gray-800 font-medium text-sm">Mật Khẩu<Text type='danger'>*</Text></span>}
+                            label={<span className="text-gray-800 font-medium text-sm"><Text type='danger'>*</Text> Mật Khẩu</span>}
                             validateStatus={errors.password ? 'error' : ''}
                             help={errors.password?.message}
                             className="mb-4"
@@ -116,7 +115,7 @@ export default function Register() {
 
                         {/* TRƯỜNG NHẬP LẠI MẬT KHẨU */}
                         <Form.Item
-                            label={<span className="text-gray-800 font-medium text-sm">Nhập lại Mật Khẩu<Text type='danger'>*</Text></span>}
+                            label={<span className="text-gray-800 font-medium text-sm"><Text type='danger'>*</Text> Nhập lại Mật Khẩu</span>}
                             validateStatus={errors.confirm_password ? 'error' : ''}
                             help={errors.confirm_password?.message}
                             className="mb-6"

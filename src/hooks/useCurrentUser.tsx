@@ -8,6 +8,7 @@ import authApi from "../apis/auth.api.ts";
 import {purchasesStatus} from "../constants/purchase.ts";
 
 type LoginForm = Pick<Schema, 'email' | 'password'>
+type RegisterForm = Pick<Schema, 'email' | 'password' | 'confirm_password'>
 
 const useCurrentUser = () => {
     const queryClient = useQueryClient()
@@ -44,7 +45,14 @@ const useCurrentUser = () => {
         }
     })
 
-    return {profile, loginMutation, logoutMutation, handleUpdateProfile}
+    const registerMutation = useMutation({
+        mutationFn: (body: Omit<RegisterForm, 'confirm_password'>) => authApi.registerAccount(body),
+        onSuccess: (data) => {
+            handleAfterLogin(data.data.data.user)
+        }
+    })
+
+    return {profile, loginMutation, logoutMutation, registerMutation, handleUpdateProfile}
 }
 
 export default useCurrentUser;

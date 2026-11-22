@@ -160,7 +160,7 @@ const App = () => {
     };
 
     return (
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-[1400px] min-h-screen mx-auto px-4 sm:px-6 lg:px-8 py-6">
             {/* Tiêu đề trang */}
             <div className="flex items-center justify-between border-b border-gray-200 mb-8">
                 <Title level={3} className="uppercase m-0 tracking-wider">

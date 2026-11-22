@@ -70,7 +70,7 @@ const App = () => {
                     >
                         {/* Field Tên đăng nhập */}
                         <Form.Item
-                            label="Email"
+                            label={<span className="text-gray-800 font-medium text-sm">Email</span>}
                             name="email"
                             rules={[{required: true, message: 'Vui lòng nhập email đăng nhập!'}]}
                         >
@@ -79,7 +79,7 @@ const App = () => {
 
                         {/* Field Mật khẩu */}
                         <Form.Item
-                            label="Mật khẩu"
+                            label={<span className="text-gray-800 font-medium text-sm">Mật khẩu</span>}
                             name="password"
                             rules={[{required: true, message: 'Vui lòng nhập mật khẩu!'}]}
                         >

@@ -36,7 +36,7 @@ const App = () => {
     const pagination = productsData?.data.data.pagination
 
     return (
-        <div className="mx-auto p-4 bg-white">
+        <div className="mx-auto p-4 bg-white min-h-screen">
             <Layout>
                 {/* 1. SIDE MENU BÊN TRÁI (Ẩn trên mobile, hiện trên màn hình từ lg trở lên) */}
                 <Sider width="25%" className="hidden lg:block border-r border-gray-100 h-full">
@@ -57,7 +57,7 @@ const App = () => {
                     </div>
 
                     {/* Lưới danh sách Product Card (Responsive: 2 cột mobile, 3 cột tablet, 4 cột desktop) */}
-                    <div className="p-4 h-[800px] overflow-y-auto pr-2">
+                    <div className="p-4 h-[700px] overflow-y-auto pr-2">
                         <Row gutter={[16, 24]}>
                             {products && products.map((product) => (
                                 <Col key={product._id} xs={12} sm={12} md={8} xl={6}>
@@ -68,8 +68,7 @@ const App = () => {
                     </div>
 
                     {/* Thanh phân trang dưới cùng */}
-                    {
-                        pagination && <div className="py-2">
+                    {pagination && <div className="py-2">
                             <Pagination
                                 queryConfig={queryConfig}
                                 current={pagination.page}
