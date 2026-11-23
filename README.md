@@ -81,6 +81,24 @@ Sau khi chạy thành công, mở trình duyệt tại địa chỉ hiển thị
 
 ---
 
+## Khởi chạy trên môi trường ảo hóa (Docker hoặc Podman)
+
+```bash
+# Kéo image mới nhất từ Docker Hub
+docker pull embeddium/mamboshop:latest
+
+# Chạy container bằng nền tảng Docker (ví dụ map port 80 của máy host tới port 80 của container)
+docker run -d \
+  --name mamboshop \
+  -p 80:80 \
+  --restart unless-stopped \
+  embeddium/mamboshop:latest
+```
+
+Sau khi chạy thành công, mở trình duyệt tại địa chỉ hiển thị trên terminal (`http://localhost`).
+
+---
+
 ## Các lệnh (Scripts) thường dùng
 
 
