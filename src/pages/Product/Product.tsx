@@ -1,4 +1,4 @@
-import {Button, Col, Drawer, Flex, Layout, Row, Space, Typography} from 'antd';
+import {Button, Col, Drawer, Flex, Layout, Row, Typography} from 'antd';
 import ProductCard from "../../components/ProductCard";
 import useQueryConfig from "../../hooks/useQueryConfig.tsx";
 import {useQuery} from "@tanstack/react-query";
@@ -87,13 +87,13 @@ const App = () => {
 
                     {/* Thanh phân trang dưới cùng */}
                     {pagination && <div className="py-2">
-                            <Pagination
-                                queryConfig={queryConfig}
-                                current={pagination.page}
-                                pageSize={pagination.limit}
-                                total={pagination.page_size * pagination.limit}
-                            />
-                        </div>
+                        <Pagination
+                            queryConfig={queryConfig}
+                            current={pagination.page}
+                            pageSize={pagination.limit}
+                            total={pagination.page_size * pagination.limit}
+                        />
+                    </div>
                     }
                 </Content>
             </Layout>

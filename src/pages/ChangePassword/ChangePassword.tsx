@@ -66,7 +66,7 @@ const App = () => {
     };
 
     return (
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
+        <div className="max-w-7xl min-h-screen mx-auto px-6 md:px-12 py-8">
             <Flex justify="center" gap={48} className="flex-col md:flex-row">
                 <div className="w-full md:w-1/4">
                     <div className="p-4">
